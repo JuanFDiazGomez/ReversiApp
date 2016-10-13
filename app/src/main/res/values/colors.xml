@@ -8,4 +8,5 @@
     <color name="cuadro_tablero_oscuro">#669900</color>
     <color name="cuadrado_tablero_oscuro">#669900</color>
     <color name="cuadro_tablero_claro">#99cc00</color>
+    <color name="color_provisional_instrucciones">#000000</color>
 </resources>
