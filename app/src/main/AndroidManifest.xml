@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".Juego" />
         <activity android:name=".Acerca_de" />
-        <activity android:name=".Instrucciones"></activity>
+        <activity android:name=".Instrucciones" />
+        <activity android:name=".Puntuaciones"></activity>
     </application>
 
 </manifest>

@@ -9,4 +9,8 @@
     <string name="boton_abandonar">Abandonar</string>
     <string name="boton_salir">Salir</string>
     <string name="texto_instrucciones">Instrucciones</string>
+    <string name="texto_puntuaciones">Puntuaciones</string>
+    <string name="puntuaciones_nombre">Nombre</string>
+    <string name="puntuaciones_puntuacion_txt" >Puntos</string>
+    <string name="fecha_txt" >Fecha</string>
 </resources>
