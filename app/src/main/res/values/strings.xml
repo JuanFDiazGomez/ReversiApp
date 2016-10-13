@@ -3,4 +3,7 @@
     <string name="titulo">Reversi World</string>
     <string name="desarrollado_por">Desarrollado por Juan F Díaz Gómez</string>
     <string name="boton_entrar">Entrar</string>
+    <string name="logoImg">logo</string>
+    <string name="valor_puntuacion">puntuacion</string>
+    <string name="boton_ayuda">Ayuda</string>
 </resources>

@@ -3,5 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="fondo_principal">#e3894d</color>
+    <color name="fondo_principal">#fc9758</color>
+    <color name="color_tablero">#3f3f3f</color>
 </resources>
