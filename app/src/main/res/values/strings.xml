@@ -6,4 +6,5 @@
     <string name="logoImg">logo</string>
     <string name="valor_puntuacion">puntuacion</string>
     <string name="boton_ayuda">Ayuda</string>
+    <string name="boton_abandonar">Abandonar</string>
 </resources>
