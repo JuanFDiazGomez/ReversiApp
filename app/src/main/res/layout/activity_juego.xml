@@ -69,8 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:background="@color/color_tablero"
-            android:padding="5dp"
-            android:id="@+id/contenedor_tablero">
+            android:id="@+id/contenedor_tablero"
+            android:padding="2dp">
 
         </LinearLayout>
 
