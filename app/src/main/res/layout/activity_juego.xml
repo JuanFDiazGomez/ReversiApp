@@ -21,73 +21,75 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_weight="3.5"
+            android:layout_marginBottom="5dp">
 
             <TextView
                 android:text="@string/logoImg"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/textView4"
                 android:layout_weight="1"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:gravity="center" />
 
             <TextView
                 android:text="@string/valor_puntuacion"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/textView5"
                 android:layout_weight="1"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:gravity="center" />
 
             <Button
                 android:text="@string/boton_ayuda"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/button2"
                 android:layout_weight="1" />
 
             <TextView
                 android:text="@string/valor_puntuacion"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/textView3"
                 android:layout_weight="1"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:gravity="center" />
 
             <TextView
                 android:text="@string/logoImg"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/textView6"
                 android:layout_weight="1"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:gravity="center" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_height="match_parent"
             android:background="@color/color_tablero"
             android:id="@+id/contenedor_tablero"
-            android:padding="2dp">
+            android:padding="2dp"
+            android:layout_weight="1">
 
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <Button
+            android:text="@string/boton_abandonar"
             android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:weightSum="1">
+            android:layout_height="match_parent"
+            android:id="@+id/button3"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="18sp"
+            android:layout_weight="3.5"
+            android:layout_marginTop="6dp" />
 
-            <Button
-                android:text="@string/boton_abandonar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/button3"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="18sp" />
-        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

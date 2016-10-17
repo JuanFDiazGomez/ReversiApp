@@ -3,6 +3,7 @@ package com.quantumdeers.reversiw;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,7 +11,7 @@ import android.widget.RelativeLayout;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 8;
+    static int N = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +20,10 @@ public class Principal extends AppCompatActivity {
         // Creamos un Layout copia del creado en XML pero con el tablero
         RelativeLayout pantalla = creaTableroDinamico(this);
 
+
         // Mostrarmos nuestro nuevo Layout
         setContentView(pantalla);
+
     }
 
     private RelativeLayout creaTableroDinamico(Principal principal) {
@@ -70,8 +73,12 @@ public class Principal extends AppCompatActivity {
             }
             // Configuramos la fila de botones
             contenedor_botones.setLayoutParams(configurarParamsLayouts());
+
             // Añadimos la fila de botones
             tablero.addView(contenedor_botones);
+
+
+
         }
     }
 
