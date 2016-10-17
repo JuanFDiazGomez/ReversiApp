@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 5;
+    static int N = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +42,8 @@ public class Principal extends AppCompatActivity {
     private void crearTablero(LinearLayout tablero) {
 
         // Definimos la configuracion de nuestros elementos
-        LinearLayout.LayoutParams ParamsLayouts = configurarParamsLayouts();
-        LinearLayout.LayoutParams ParamsBotones = configurarParamsBotones();
-
+        //LinearLayout.LayoutParams ParamsLayouts = configurarParamsLayouts();
+        //LinearLayout.LayoutParams ParamsBotones = configurarParamsBotones();
         for(int i = 0; i < N; i++) {
             // Creamos la fila de botones
             LinearLayout contenedor_botones = new LinearLayout(this);
@@ -64,34 +63,34 @@ public class Principal extends AppCompatActivity {
                     );
                 }
                 // Configuramos el boton
-                boton.setLayoutParams(ParamsBotones);
+                boton.setLayoutParams(configurarParamsBotones());
 
                 // Añadimos cada boton al contenedor
                 contenedor_botones.addView(boton);
             }
             // Configuramos la fila de botones
-            contenedor_botones.setLayoutParams(ParamsLayouts);
-
+            contenedor_botones.setLayoutParams(configurarParamsLayouts());
             // Añadimos la fila de botones
             tablero.addView(contenedor_botones);
         }
     }
 
     private LinearLayout.LayoutParams configurarParamsBotones(){
-        LinearLayout.LayoutParams ParamsBotones = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams ParamsBotones = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         ParamsBotones.setMargins(0,0,0,0);
+
         // Le definimos el peso para que todos ocupen el mismo espacio
         ParamsBotones.weight=1;
+
         return ParamsBotones;
     }
 
     private LinearLayout.LayoutParams configurarParamsLayouts(){
-        LinearLayout.LayoutParams ParamsLoyouts = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams paramsLayout = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
+        paramsLayout.weight=1;
 
-        return ParamsLoyouts;
+        return paramsLayout;
     }
 }
