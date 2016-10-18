@@ -11,7 +11,9 @@ import android.widget.RelativeLayout;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 10;
+    static int N = 5;
+    Button boton[][];
+    LinearLayout contenedor_botones[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,35 +49,46 @@ public class Principal extends AppCompatActivity {
         // Definimos la configuracion de nuestros elementos
         //LinearLayout.LayoutParams ParamsLayouts = configurarParamsLayouts();
         //LinearLayout.LayoutParams ParamsBotones = configurarParamsBotones();
-        for(int i = 0; i < N; i++) {
+        boton = new Button[N][N];
+        contenedor_botones = new LinearLayout[N];
+        for(int fila = 0; fila < N; fila++) {
             // Creamos la fila de botones
-            LinearLayout contenedor_botones = new LinearLayout(this);
-            contenedor_botones.setOrientation(LinearLayout.HORIZONTAL);
-            contenedor_botones.setPadding(0,0,0,0);
-            for(int j = 0; j < N ; j++){
+            contenedor_botones[fila] = new LinearLayout(this);
+            contenedor_botones[fila].setOrientation(LinearLayout.HORIZONTAL);
+            contenedor_botones[fila].setPadding(0,0,0,0);
+            for(int columna = 0; columna < N ; columna++){
                 // Creamos el boton
-                Button boton = new Button(this);
+                boton[fila][columna] = new Button(this);
                 // Intercambiamos el color a cada boton
-                if((i+j) % 2 == 0) {
-                    boton.setBackgroundColor(
+                if((fila+columna) % 2 == 0) {
+                    boton[fila][columna].setBackgroundColor(
                             getResources().getColor(R.color.cuadro_tablero_oscuro)
                     );
                 }else{
-                    boton.setBackgroundColor(
+                    boton[fila][columna].setBackgroundColor(
                             getResources().getColor(R.color.cuadro_tablero_claro)
                     );
                 }
                 // Configuramos el boton
-                boton.setLayoutParams(configurarParamsBotones());
+                boton[fila][columna].setLayoutParams(configurarParamsBotones());
+                boton[fila][columna].setTag((fila*N)+columna);
+                boton[fila][columna].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Button boton = (Button) v;
+                        boton.setText("X");
+                        turnoIA();
+                    }
+                });
 
                 // Añadimos cada boton al contenedor
-                contenedor_botones.addView(boton);
+                contenedor_botones[fila].addView(boton[fila][columna]);
             }
             // Configuramos la fila de botones
-            contenedor_botones.setLayoutParams(configurarParamsLayouts());
+            contenedor_botones[fila].setLayoutParams(configurarParamsLayouts());
 
             // Añadimos la fila de botones
-            tablero.addView(contenedor_botones);
+            tablero.addView(contenedor_botones[fila]);
 
 
 
@@ -99,5 +112,15 @@ public class Principal extends AppCompatActivity {
         paramsLayout.weight=1;
 
         return paramsLayout;
+    }
+    // TODO arreglar esto que no va
+    public void turnoIA(){
+        int fila;//= (int) Math.round(Math.random()*(N - 1));
+        int columna;// = (int) Math.round(Math.random()*(N - 1));
+        do{
+            fila = (int) Math.random()*(N-1);
+            columna  = (int) Math.random()*(N-1);
+        }while(boton[fila][columna].getText().equals("X"));
+        boton[fila][columna].setText("O");
     }
 }
