@@ -27,7 +27,7 @@
 
             <TextView
                 android:text="@string/logoImg"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/textView4"
                 android:layout_weight="1"
@@ -36,32 +36,32 @@
 
             <TextView
                 android:text="@string/valor_puntuacion"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/textView5"
+                android:id="@+id/puntuacionJugador"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:gravity="center" />
 
             <Button
                 android:text="@string/boton_ayuda"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/botonAyuda"
-                android:layout_weight="1" />
+                android:layout_weight="0.8" />
 
             <TextView
                 android:text="@string/valor_puntuacion"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/textView3"
+                android:id="@+id/puntuacionIA"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:gravity="center" />
 
             <TextView
                 android:text="@string/logoImg"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/textView6"
                 android:layout_weight="1"
