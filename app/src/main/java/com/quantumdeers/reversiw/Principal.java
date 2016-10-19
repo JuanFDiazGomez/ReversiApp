@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 20;
+    static int N = 15;
     Button botones[][];
     LinearLayout contenedor_botones[];
     int casillasNoDisponibles = 0;
@@ -76,7 +76,7 @@ public class Principal extends AppCompatActivity {
                 // Configuramos el boton
                 botones[fila][columna].setLayoutParams(configurarParamsBotones());
                 botones[fila][columna].setTag(new Integer((fila*N)+columna));
-                botones[fila][columna].setTextSize((float)(100/N));
+                botones[fila][columna].setTextSize((float)(250/N));
                 botones[fila][columna].setPadding(0,0,0,0);
                 botones[fila][columna].setOnClickListener(new View.OnClickListener() {
                     @Override
