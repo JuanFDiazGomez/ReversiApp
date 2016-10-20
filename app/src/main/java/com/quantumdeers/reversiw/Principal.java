@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 17;
+    static int N = 15;
     Button botones[][];
     LinearLayout contenedor_botones[];
     int casillasNoDisponibles = 0;
