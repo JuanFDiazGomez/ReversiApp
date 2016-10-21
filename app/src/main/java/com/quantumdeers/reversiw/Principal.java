@@ -12,12 +12,13 @@ import android.widget.TextView;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 15;
+    static int tamTablero = 15;
     Button botones[][];
     LinearLayout contenedor_botones[];
     int casillasNoDisponibles = 0;
-    int puntuacionJugador=0;
-    int puntuacionIa=0;
+    int puntuacionJugador = 0;
+    int puntuacionIa = 0;
+    boolean turnoJugador;
     RelativeLayout pantalla;
 
     @Override
@@ -25,8 +26,9 @@ public class Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Creamos un Layout copia del creado en XML pero con el tablero
-        RelativeLayout pantalla = creaTableroDinamico(this);
+        pantalla = creaTableroDinamico(this);
 
+        //ReversiGame game = new ReversiGame(botones);
 
         // Mostrarmos nuestro nuevo Layout
         setContentView(pantalla);
@@ -48,66 +50,84 @@ public class Principal extends AppCompatActivity {
         return pantalla;
     }
 
+    private void crearContenedorBotones(LinearLayout contenedor) {
+        contenedor = new LinearLayout(this);
+        contenedor.setOrientation(LinearLayout.HORIZONTAL);
+        contenedor.setPadding(0, 0, 0, 0);
+    }
+
+    private Button crearBoton(Button boton, Integer tag) {
+        // Creamos el boton
+        boton = new Button(this);
+        boton.setLayoutParams(configurarParamsBotones());
+        boton.setTag(tag);
+        boton.setTextSize((float) (250 / tamTablero));
+        boton.setPadding(0, 0, 0, 0);
+        // Intercambiamos el color a cada boton
+        if (tag.intValue() % 2 == 0) {
+            boton.setBackgroundColor(
+                    getResources().getColor(R.color.cuadro_tablero_oscuro)
+            );
+        } else {
+            boton.setBackgroundColor(
+                    getResources().getColor(R.color.cuadro_tablero_claro)
+            );
+        }
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turnoJugador(v);
+                if (casillasNoDisponibles < tamTablero * tamTablero)
+                    turnoIA();
+                actualizarPuntuaciones();
+                comprobarJuegoFinalizado();
+
+            }
+        });
+        return boton;
+    }
+
+    private void comprobarJuegoFinalizado(){
+        if (casillasNoDisponibles == tamTablero * tamTablero) {
+            Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
+            if (puntuacionJugador > puntuacionIa) {
+                botonAbandonar.setText("You WIN! - RESTART");
+            } else {
+                botonAbandonar.setText("You LOSE! - RESTART");
+            }
+            botonAbandonar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reiniciar((Button) v);
+                }
+            });
+        }
+    }
+    private void actualizarPuntuaciones() {
+        if (turnoJugador) {
+            TextView puntuacionTV =
+                    (TextView) pantalla.findViewById(R.id.puntuacionJugador);
+            puntuacionTV.setText(Integer.toString(puntuacionJugador));
+        } else {
+            TextView puntuacionIaTV =
+                    (TextView) pantalla.findViewById(R.id.puntuacionIA);
+            puntuacionIaTV.setText(Integer.toString(puntuacionIa));
+        }
+
+
+    }
+
     private void modificarTablero(LinearLayout tablero) {
 
-        // Definimos la configuracion de nuestros elementos
-        //LinearLayout.LayoutParams ParamsLayouts = configurarParamsLayouts();
-        //LinearLayout.LayoutParams ParamsBotones = configurarParamsBotones();
-        botones = new Button[N][N];
-        contenedor_botones = new LinearLayout[N];
-        for(int fila = 0; fila < N; fila++) {
-            // Creamos la fila de botones
-            contenedor_botones[fila] = new LinearLayout(this);
-            contenedor_botones[fila].setOrientation(LinearLayout.HORIZONTAL);
-            contenedor_botones[fila].setPadding(0,0,0,0);
-            for(int columna = 0; columna < N ; columna++){
-                // Creamos el boton
-                botones[fila][columna] = new Button(this);
-                // Intercambiamos el color a cada boton
-                if((fila+columna) % 2 == 0) {
-                    botones[fila][columna].setBackgroundColor(
-                            getResources().getColor(R.color.cuadro_tablero_oscuro)
-                    );
-                }else{
-                    botones[fila][columna].setBackgroundColor(
-                            getResources().getColor(R.color.cuadro_tablero_claro)
-                    );
-                }
-                // Configuramos el boton
-                botones[fila][columna].setLayoutParams(configurarParamsBotones());
-                botones[fila][columna].setTag(new Integer((fila*N)+columna));
-                botones[fila][columna].setTextSize((float)(250/N));
-                botones[fila][columna].setPadding(0,0,0,0);
-                botones[fila][columna].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        turnoJugador(v);
-                        if(casillasNoDisponibles < N*N)
-                            turnoIA();
-                        TextView puntuacionJugadorTV =
-                                (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-                        puntuacionJugadorTV.setText(Integer.toString(puntuacionJugador));
-                        TextView puntuacionIaTV =
-                                (TextView) pantalla.findViewById(R.id.puntuacionIA);
-                        puntuacionIaTV.setText(Integer.toString(puntuacionIa));
-                        if(casillasNoDisponibles == N*N){
-                            Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
-                            if(puntuacionJugador>puntuacionIa){
-                                botonAbandonar.setText("You WIN! - RESTART");
-                            }else{
-                                botonAbandonar.setText("You LOSE! - RESTART");
-                            }
-                            botonAbandonar.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    reiniciar((Button)v);
-                                }
-                            });
-                        }
-                    }
-                });
+        botones = new Button[tamTablero][tamTablero];
+        contenedor_botones = new LinearLayout[tamTablero];
 
-                // Añadimos cada boton al contenedor
+        for (int fila = 0; fila < tamTablero; fila++) {
+            // Creamos la fila de botones
+            crearContenedorBotones(contenedor_botones[fila]);
+            for (int columna = 0; columna < tamTablero; columna++) {
+                Integer tag = new Integer((fila * tamTablero) + columna);
+                botones[fila][columna] = crearBoton(botones[fila][columna], tag);
                 contenedor_botones[fila].addView(botones[fila][columna]);
             }
             // Configuramos la fila de botones
@@ -118,28 +138,28 @@ public class Principal extends AppCompatActivity {
         }
     }
 
-    private LinearLayout.LayoutParams configurarParamsBotones(){
+    private LinearLayout.LayoutParams configurarParamsBotones() {
         LinearLayout.LayoutParams ParamsBotones = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        ParamsBotones.setMargins(0,0,0,0);
+        ParamsBotones.setMargins(0, 0, 0, 0);
 
         // Le definimos el peso para que todos ocupen el mismo espacio
-        ParamsBotones.weight=1;
+        ParamsBotones.weight = 1;
 
         return ParamsBotones;
     }
 
-    private LinearLayout.LayoutParams configurarParamsLayouts(){
+    private LinearLayout.LayoutParams configurarParamsLayouts() {
         LinearLayout.LayoutParams paramsLayout = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        paramsLayout.weight=1;
+        paramsLayout.weight = 1;
 
         return paramsLayout;
     }
 
-    private void turnoJugador(View v){
+    private void turnoJugador(View v) {
         Button boton = (Button) v;
-        Integer tag = (Integer)(boton.getTag());
+        Integer tag = (Integer) (boton.getTag());
         boton.setText("X");
         puntuacionJugador++;
         boton.setClickable(false);
@@ -147,13 +167,13 @@ public class Principal extends AppCompatActivity {
         volteaColindantes(boton, "X");
     }
 
-    private void turnoIA(){
-        int fila;//= (int) Math.round(Math.random()*(N - 1));
-        int columna;// = (int) Math.round(Math.random()*(N - 1));
-        do{
-            fila = (int) (Math.random()*N);
-            columna  = (int) (Math.random()*N);
-        }while(!botones[fila][columna].isClickable());
+    private void turnoIA() {
+        int fila;//= (int) Math.round(Math.random()*(tamTablero - 1));
+        int columna;// = (int) Math.round(Math.random()*(tamTablero - 1));
+        do {
+            fila = (int) (Math.random() * tamTablero);
+            columna = (int) (Math.random() * tamTablero);
+        } while (!botones[fila][columna].isClickable());
         botones[fila][columna].setText("O");
         puntuacionIa++;
         botones[fila][columna].setClickable(false);
@@ -161,16 +181,17 @@ public class Principal extends AppCompatActivity {
         volteaColindantes(botones[fila][columna], "O");
 
     }
+
     // TODO hacer mas eficiente el bucle, separar las ocasiones en las que la fila es 0 o 5 y columna igual
-    private void volteaColindantes(Button boton, String jugador){
-        int tag = (Integer)(boton.getTag());
-        int fila = (int)tag/N;
-        int columna = tag-(fila*N);
-        for(int i = -1; i < 2; i++){
-            if(fila+i<N && fila+i>=0) {
+    private void volteaColindantes(Button boton, String jugador) {
+        int tag = (Integer) (boton.getTag());
+        int fila = (int) tag / tamTablero;
+        int columna = tag - (fila * tamTablero);
+        for (int i = -1; i < 2; i++) {
+            if (fila + i < tamTablero && fila + i >= 0) {
                 for (int j = -1; j < 2; j++) {
-                    if(columna+j<N && columna+j>=0){
-                        if(!(i==0 && j==0)) {
+                    if (columna + j < tamTablero && columna + j >= 0) {
+                        if (!(i == 0 && j == 0)) {
                             //TODO probar switch
                             if (botones[fila + i][columna + j].isClickable()) {
                                 casillasNoDisponibles++;
@@ -201,9 +222,9 @@ public class Principal extends AppCompatActivity {
         }
     }
 
-    private void reiniciar(Button botonAbandonar){
-        for (int fila = 0; fila < N; fila++){
-            for(int columna = 0; columna < N; columna++){
+    private void reiniciar(Button botonAbandonar) {
+        for (int fila = 0; fila < tamTablero; fila++) {
+            for (int columna = 0; columna < tamTablero; columna++) {
                 botones[fila][columna].setClickable(true);
                 botones[fila][columna].setText("");
                 TextView puntuacionJugadorTV =
@@ -212,9 +233,9 @@ public class Principal extends AppCompatActivity {
                 TextView puntuacionIaTV =
                         (TextView) pantalla.findViewById(R.id.puntuacionIA);
                 puntuacionIaTV.setText("0");
-                puntuacionIa=0;
-                puntuacionJugador=0;
-                casillasNoDisponibles=0;
+                puntuacionIa = 0;
+                puntuacionJugador = 0;
+                casillasNoDisponibles = 0;
                 botonAbandonar.setText("ABANDONAR");
             }
         }
