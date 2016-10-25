@@ -1,6 +1,7 @@
 package com.quantumdeers.reversiw;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 /**
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 
 public class ReversiGame {
 
+    private LinearLayout pantalla;
     private int tamTablero;
     private Button[][] botonesTablero;
     private int casillasNoDisponibles;

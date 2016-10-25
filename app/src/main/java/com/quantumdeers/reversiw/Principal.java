@@ -1,18 +1,23 @@
 package com.quantumdeers.reversiw;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Principal extends AppCompatActivity {
 
-    static int N = 17;
+    static int N = 6;
     Button botones[][];
     LinearLayout contenedor_botones[];
     int casillasNoDisponibles = 0;
@@ -23,99 +28,143 @@ public class Principal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Creamos un Layout copia del creado en XML pero con el tablero
         RelativeLayout pantalla = creaTableroDinamico(this);
-
-
-        // Mostrarmos nuestro nuevo Layout
         setContentView(pantalla);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_principal, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.menu_configuracion:
+                tostadaNoConfiguracion();
+                break;
+            case R.id.menu_acerca_de:
+                tostadaAcercaDe();
+                break;
+            case R.id.menu_salir:
+                this.finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void tostadaNoConfiguracion() {
+        Toast.makeText(this, "Configuración aun no disponible", Toast.LENGTH_LONG).show();
+    }
+
+    private void tostadaAcercaDe() {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.activity_acerca_de,(ViewGroup) findViewById(R.id.activity_principal));
+        layout.setBackgroundColor(Color.TRANSPARENT);
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 
     private RelativeLayout creaTableroDinamico(Principal principal) {
-        // Copiamos nuestro diseño del layout de la pantalla juego
         pantalla = (RelativeLayout) LayoutInflater.from(principal).
                 inflate(R.layout.activity_juego, null, false);
-
-        // Cojemos el layout que contendra el tablero de nuestra copia
         LinearLayout tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
-
-        // modificamos el tablero
         modificarTablero(tablero);
-
-        // Devolvemos nuestra nueva pantalla
         return pantalla;
     }
 
     private void modificarTablero(LinearLayout tablero) {
-
-        // Definimos la configuracion de nuestros elementos
-        //LinearLayout.LayoutParams ParamsLayouts = configurarParamsLayouts();
-        //LinearLayout.LayoutParams ParamsBotones = configurarParamsBotones();
         botones = new Button[N][N];
         contenedor_botones = new LinearLayout[N];
         for(int fila = 0; fila < N; fila++) {
-            // Creamos la fila de botones
             contenedor_botones[fila] = new LinearLayout(this);
             contenedor_botones[fila].setOrientation(LinearLayout.HORIZONTAL);
             contenedor_botones[fila].setPadding(0,0,0,0);
+            contenedor_botones[fila].setLayoutParams(configurarParamsLayouts());
             for(int columna = 0; columna < N ; columna++){
-                // Creamos el boton
-                botones[fila][columna] = new Button(this);
-                // Intercambiamos el color a cada boton
-                if((fila+columna) % 2 == 0) {
-                    botones[fila][columna].setBackgroundColor(
-                            getResources().getColor(R.color.cuadro_tablero_oscuro)
-                    );
-                }else{
-                    botones[fila][columna].setBackgroundColor(
-                            getResources().getColor(R.color.cuadro_tablero_claro)
-                    );
-                }
-                // Configuramos el boton
-                botones[fila][columna].setLayoutParams(configurarParamsBotones());
-                botones[fila][columna].setTag(new Integer((fila*N)+columna));
-                botones[fila][columna].setTextSize((float)(250/N));
-                botones[fila][columna].setPadding(0,0,0,0);
-                botones[fila][columna].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        turnoJugador(v);
-                        if(casillasNoDisponibles < N*N)
-                            turnoIA();
-                        TextView puntuacionJugadorTV =
-                                (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-                        puntuacionJugadorTV.setText(Integer.toString(puntuacionJugador));
-                        TextView puntuacionIaTV =
-                                (TextView) pantalla.findViewById(R.id.puntuacionIA);
-                        puntuacionIaTV.setText(Integer.toString(puntuacionIa));
-                        if(casillasNoDisponibles == N*N){
-                            Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
-                            if(puntuacionJugador>puntuacionIa){
-                                botonAbandonar.setText("You WIN! - RESTART");
-                            }else{
-                                botonAbandonar.setText("You LOSE! - RESTART");
-                            }
-                            botonAbandonar.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    reiniciar((Button)v);
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // Añadimos cada boton al contenedor
+                botones[fila][columna]=crearBoton(fila, columna);
                 contenedor_botones[fila].addView(botones[fila][columna]);
             }
-            // Configuramos la fila de botones
-            contenedor_botones[fila].setLayoutParams(configurarParamsLayouts());
-
-            // Añadimos la fila de botones
             tablero.addView(contenedor_botones[fila]);
         }
+    }
+
+    private Button crearBoton(int fila, int columna){
+        Button boton = new Button(this);
+        // Configuramos el boton
+        boton.setLayoutParams(configurarParamsBotones());
+        boton.setTag(new Integer((fila*N)+columna));
+        boton.setTextSize((float)(250/N));
+        boton.setPadding(0,0,0,0);
+        // Intercambiamos el color a cada boton
+        if(fila%2==0){
+            if(columna % 2 == 0) {
+                boton.setBackgroundColor(
+                        getResources().getColor(R.color.cuadro_tablero_oscuro)
+                );
+            }else{
+                boton.setBackgroundColor(
+                        getResources().getColor(R.color.cuadro_tablero_claro)
+                );
+            }
+        }else{
+            if(columna % 2 == 0) {
+                boton.setBackgroundColor(
+                        getResources().getColor(R.color.cuadro_tablero_claro)
+                );
+            }else{
+                boton.setBackgroundColor(
+                        getResources().getColor(R.color.cuadro_tablero_oscuro)
+                );
+            }
+        }
+
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jugada(v);
+            }
+        });
+        boton.setClickable(false);
+        return boton;
+    }
+
+    private void jugada(View v){
+        turnoJugador(v);
+        if(casillasNoDisponibles < N*N)
+            turnoIA();
+        TextView puntuacionJugadorTV =
+                (TextView) pantalla.findViewById(R.id.puntuacionJugador);
+        puntuacionJugadorTV.setText(Integer.toString(puntuacionJugador));
+        TextView puntuacionIaTV =
+                (TextView) pantalla.findViewById(R.id.puntuacionIA);
+        puntuacionIaTV.setText(Integer.toString(puntuacionIa));
+        if(casillasNoDisponibles == N*N){
+            Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
+            crearToast();
+            botonAbandonar.setText("Reiniciar");
+            botonAbandonar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reiniciar((Button)v);
+                }
+            });
+        }
+    }
+
+    private void crearToast() {
+        if(puntuacionJugador>puntuacionIa){
+            Toast.makeText(this, "You Win!!!", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "You Lose!!!", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private LinearLayout.LayoutParams configurarParamsBotones(){

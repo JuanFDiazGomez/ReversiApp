@@ -13,4 +13,7 @@
     <string name="puntuaciones_puntuacion_txt" >Puntos</string>
     <string name="fecha_txt" >Fecha</string>
     <string name="valor_puntuacion">0</string>
+    <string name="menuSalir">Salir</string>
+    <string name="menuAcercaDe">Acerca de</string>
+    <string name="menuConfiguracion">Configuracion</string>
 </resources>
