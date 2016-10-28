@@ -16,4 +16,5 @@
     <string name="menuSalir">Salir</string>
     <string name="menuAcercaDe">Acerca de</string>
     <string name="menuConfiguracion">Configuracion</string>
+    <string name="textoReiniciar">Reiniciar</string>
 </resources>

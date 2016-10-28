@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 public class Principal extends AppCompatActivity {
 
     static int N = 6;
@@ -73,7 +75,7 @@ public class Principal extends AppCompatActivity {
 
     private RelativeLayout creaTableroDinamico(Principal principal) {
         pantalla = (RelativeLayout) LayoutInflater.from(principal).
-                inflate(R.layout.activity_juego, null, false);
+                inflate(R.layout.activity_juego, new LinearLayout(this), false);
         LinearLayout tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
         modificarTablero(tablero);
         return pantalla;
@@ -99,7 +101,7 @@ public class Principal extends AppCompatActivity {
         Button boton = new Button(this);
         // Configuramos el boton
         boton.setLayoutParams(configurarParamsBotones());
-        boton.setTag(new Integer((fila*N)+columna));
+        boton.setTag((fila*N)+columna);
         boton.setTextSize((float)(250/N));
         boton.setPadding(0,0,0,0);
         // Intercambiamos el color a cada boton
@@ -131,7 +133,7 @@ public class Principal extends AppCompatActivity {
                 jugada(v);
             }
         });
-        boton.setClickable(false);
+        boton.setClickable(true);
         return boton;
     }
 
@@ -141,14 +143,14 @@ public class Principal extends AppCompatActivity {
             turnoIA();
         TextView puntuacionJugadorTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-        puntuacionJugadorTV.setText(Integer.toString(puntuacionJugador));
+        puntuacionJugadorTV.setText(String.format(Locale.getDefault(),"%d", puntuacionJugador));
         TextView puntuacionIaTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionIA);
-        puntuacionIaTV.setText(Integer.toString(puntuacionIa));
+        puntuacionIaTV.setText(String.format(Locale.getDefault(),"%d", puntuacionIa));
         if(casillasNoDisponibles == N*N){
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
             crearToast();
-            botonAbandonar.setText("Reiniciar");
+            botonAbandonar.setText(R.string.textoReiniciar);
             botonAbandonar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -188,7 +190,6 @@ public class Principal extends AppCompatActivity {
 
     private void turnoJugador(View v){
         Button boton = (Button) v;
-        Integer tag = (Integer)(boton.getTag());
         boton.setText("X");
         puntuacionJugador++;
         boton.setClickable(false);
@@ -213,7 +214,7 @@ public class Principal extends AppCompatActivity {
     // TODO hacer mas eficiente el bucle, separar las ocasiones en las que la fila es 0 o 5 y columna igual
     private void volteaColindantes(Button boton, String jugador){
         int tag = (Integer)(boton.getTag());
-        int fila = (int)tag/N;
+        int fila = tag/N;
         int columna = tag-(fila*N);
         for(int i = -1; i < 2; i++){
             if(fila+i<N && fila+i>=0) {
@@ -264,7 +265,7 @@ public class Principal extends AppCompatActivity {
                 puntuacionIa=0;
                 puntuacionJugador=0;
                 casillasNoDisponibles=0;
-                botonAbandonar.setText("ABANDONAR");
+                botonAbandonar.setText(R.string.boton_abandonar);
             }
         }
     }
