@@ -26,20 +26,9 @@ public class ReversiGame {
         this.puntuacionIA = 0;
     }
 
-    public int getTamTablero() {
-        return tamTablero;
-    }
-
-    public void setTamTablero(int tamTablero) {
-        this.tamTablero = tamTablero;
-    }
 
     public Button[][] getBotonesTablero() {
         return botonesTablero;
-    }
-
-    public void setBotonesTablero(Button[][] botonesTablero) {
-        this.botonesTablero = botonesTablero;
     }
 
     public int getCasillasNoDisponibles() {
@@ -65,5 +54,7 @@ public class ReversiGame {
     public void setPuntuacionIA(int puntuacionIA) {
         this.puntuacionIA = puntuacionIA;
     }
+
+
 
 }
