@@ -8,14 +8,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import java.util.Locale;
 
-/**
- * Created by alumno on 21/10/16.
- */
-
-public class ReversiGame {
+class ReversiGame {
     private Principal principal;
     private RelativeLayout pantalla;
     private LinearLayout tablero;
@@ -25,7 +20,7 @@ public class ReversiGame {
     private int puntuacionJugador;
     private int puntuacionIA;
 
-    public ReversiGame(Principal principal) {
+    ReversiGame(Principal principal) {
         this.principal = principal;
         this.casillasOcupadas = 0;
         this.puntuacionJugador = 0;
@@ -33,7 +28,7 @@ public class ReversiGame {
         this.pantalla = crearPantalla();
     }
 
-    public RelativeLayout getPantalla() {
+    RelativeLayout getPantalla() {
         return pantalla;
     }
 
