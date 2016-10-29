@@ -11,15 +11,13 @@ import android.view.ViewGroup;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.Locale;
-
 public class Principal extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ReversiGame reversiGame = new ReversiGame(this);
-        setContentView(reversiGame.getPantalla());
+        GameBoardCreator gameBoardCreator = new GameBoardCreator(this);
+        setContentView(gameBoardCreator.getPantalla());
     }
 
     @Override
@@ -42,7 +40,6 @@ public class Principal extends AppCompatActivity {
                 this.finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

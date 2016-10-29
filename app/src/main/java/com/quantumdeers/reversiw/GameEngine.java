@@ -1,116 +1,36 @@
 package com.quantumdeers.reversiw;
 
-import android.widget.TextView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Locale;
 
-class ReversiGame {
+class GameEngine {
     private Principal principal;
     private RelativeLayout pantalla;
-    private LinearLayout tablero;
-    private final static int TAM = 6;
     private Button[][] matrizBotones;
     private int casillasOcupadas;
     private int puntuacionJugador;
     private int puntuacionIA;
+    private int TAM;
 
-    ReversiGame(Principal principal) {
+    GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal){
         this.principal = principal;
+        this.pantalla = pantalla;
         this.casillasOcupadas = 0;
         this.puntuacionJugador = 0;
         this.puntuacionIA = 0;
-        this.pantalla = crearPantalla();
+        this.TAM = TAM;
+        this.matrizBotones=matrizBotones;
     }
 
-    RelativeLayout getPantalla() {
-        return pantalla;
-    }
-
-    private RelativeLayout crearPantalla() {
-        pantalla = (RelativeLayout) LayoutInflater.from(principal).
-                inflate(R.layout.activity_juego, new LinearLayout(principal), false);
-        tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
-        modificarTablero();
-        return pantalla;
-    }
-
-    private void modificarTablero() {
-        LinearLayout[] arrayContenedorBotones = new LinearLayout[TAM];
-        matrizBotones = new Button[TAM][TAM];
-        for (int fila = 0; fila < TAM; fila++) {
-            arrayContenedorBotones[fila] = crearContenedorBotones();
-            for (int columna = 0; columna < TAM; columna++) {
-                matrizBotones[fila][columna] = crearBoton(fila, columna);
-                arrayContenedorBotones[fila].addView(matrizBotones[fila][columna]);
-            }
-            tablero.addView(arrayContenedorBotones[fila]);
-        }
-    }
-
-    private LinearLayout crearContenedorBotones() {
-        LinearLayout contenedor = new LinearLayout(principal);
-        contenedor.setLayoutParams(crearLayoutParams());
-        contenedor.setOrientation(LinearLayout.HORIZONTAL);
-        contenedor.setPadding(0, 0, 0, 0);
-        return contenedor;
-    }
-
-    private Button crearBoton(int fila, int columna) {
-        Button boton = new Button(principal);
-        boton.setLayoutParams(crearLayoutParams());
-        boton.setTag((fila * TAM) + columna);
-        boton.setTextSize((float) (250 / TAM));
-        boton.setPadding(0, 0, 0, 0);
-        if (fila % 2 == 0) {
-            if(columna % 2 == 0) {
-                boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_oscuro));
-            }else{
-                boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_claro));
-            }
-        } else {
-            if(columna % 2 != 0) {
-                boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_oscuro));
-            }else{
-                boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_claro));
-            }
-        }
-
-        boton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View botonPulsado) {
-                jugada((Button) botonPulsado);
-            }
-        });
-
-        return boton;
-    }
-
-    private LinearLayout.LayoutParams crearLayoutParams() {
-        LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins(0, 0, 0, 0);
-        layoutParams.weight = 1;
-        return layoutParams;
-    }
-
-    private void jugada(Button botonPulsado) {
+    void jugada(Button botonPulsado){
         turnoJugador(botonPulsado);
         if (casillasOcupadas < TAM * TAM) {
             turnoIA();
-        }
-        if (casillasOcupadas == TAM * TAM) {
+        }else{
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
             crearToast();
             botonAbandonar.setText(R.string.textoReiniciar);
@@ -145,8 +65,8 @@ class ReversiGame {
     }
 
     private void turnoIA() {
-        int fila;//= (int) Math.round(Math.random()*(N - 1));
-        int columna;// = (int) Math.round(Math.random()*(N - 1));
+        int fila;
+        int columna;
         do {
             fila = (int) (Math.random() * TAM);
             columna = (int) (Math.random() * TAM);
@@ -179,6 +99,7 @@ class ReversiGame {
             }
         }
     }
+
     //TODO redefinir este metodo
     /*private void volteaColindantes(Button boton, String jugador) {
         int tag = (Integer) (boton.getTag());
