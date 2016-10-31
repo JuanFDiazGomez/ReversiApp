@@ -5,53 +5,40 @@ enum opcionCoordenadas{
 }
 
 public class CoordenadasBusqueda {
-    private int fila;
-    private int columna;
+    private int TAM;
 
-    public CoordenadasBusqueda(opcionCoordenadas opcion){
-        switch(opcion){
-            case N:
-                this.fila = -1;
-                this.columna = 0;
-                break;
-            case S:
-                this.fila = 1;
-                this.columna = 0;
-                break;
-            case W:
-                this.fila = 0;
-                this.columna = -1;
-                break;
-            case E:
-                this.fila = 0;
-                this.columna = 1;
-                break;
-            case NW:
-                this.fila = -1;
-                this.columna = -1;
-                break;
-            case SW:
-                this.fila = 1;
-                this.columna = -1;
-                break;
-            case NE:
-                this.fila = -1;
-                this.columna = 1;
-                break;
-            case SE:
-                this.fila = 1;
-                this.columna = 1;
-                break;
-        }
+    public CoordenadasBusqueda(int TAM){
+        this.TAM = TAM;
+    }
+    public int N(){
+        return -TAM;
     }
 
-    public int getFila() {
-        return fila;
+    public int S(){
+        return TAM;
     }
 
-    public int getColumna() {
-        return columna;
+    public int W(){
+        return -1;
     }
 
+    public int E(){
+        return 1;
+    }
 
+    public int NW(){
+        return N()+W();
+    }
+
+    public int NE(){
+        return N()+E();
+    }
+
+    public int SW(){
+        return S()+W();
+    }
+
+    public int SE(){
+        return S()+E();
+    }
 }
