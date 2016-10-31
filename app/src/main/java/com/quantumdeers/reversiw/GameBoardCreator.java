@@ -58,6 +58,7 @@ class GameBoardCreator {
     private Button crearBoton(int fila, int columna) {
         Button boton = new Button(principal);
         boton.setLayoutParams(crearLayoutParams());
+        boton.setText("");
         boton.setTag((fila * TAM) + columna);
         boton.setTextSize((float) (250 / TAM));
         boton.setPadding(0, 0, 0, 0);
@@ -85,7 +86,6 @@ class GameBoardCreator {
                 gameEngine.jugada((Button) botonPulsado);
             }
         });
-
         return boton;
     }
 

@@ -5,6 +5,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 class GameEngine {
@@ -14,7 +16,13 @@ class GameEngine {
     private int casillasOcupadas;
     private int puntuacionJugador;
     private int puntuacionIA;
-    private int TAM;
+    private static int TAM;
+    private ArrayList<Integer> casillasJugador;
+    private ArrayList<Integer> casillasIA;
+    private ArrayList<Integer> casillasDisponibles;
+    private static ArrayList<Integer> casillasSinOcupar;
+    private CoordenadasBusqueda[] arrayCoordenadas;
+    private boolean jugadorEmpieza;
 
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal){
         this.principal = principal;
@@ -23,9 +31,94 @@ class GameEngine {
         this.puntuacionJugador = 0;
         this.puntuacionIA = 0;
         this.TAM = TAM;
-        this.matrizBotones=matrizBotones;
+        this.matrizBotones = matrizBotones;
+        this.casillasJugador = new ArrayList<>(TAM/2);
+        this.casillasIA = new ArrayList<>(TAM/2);
+        this.casillasDisponibles = new ArrayList<>(10);
+        this.jugadorEmpieza=true;
+        this.crearCoordenadas();
+        this.iniciarJuego();
+
+    }
+    private void crearCoordenadas(){
+        int index = 0;
+        arrayCoordenadas = new CoordenadasBusqueda[8];
+        arrayCoordenadas[index] = new CoordenadasBusqueda(opcionCoordenadas.N);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.S);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.W);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.E);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.NW);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.NE);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.SW);
+        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.SE);
+        casillasSinOcupar = new ArrayList<>(TAM*TAM);
+        for(int tag = 0; tag < TAM*TAM; tag++){
+            casillasSinOcupar.add(tag);
+        }
+    }
+    private void iniciarJuego(){
+        for(int fila = 0; fila < TAM; fila++){
+            for(int columna = 0; columna < TAM; columna++){
+                matrizBotones[fila][columna].setClickable(false);
+            }
+        }
+        int A = (TAM-1)/2;
+        int B = (TAM)/2;
+        matrizBotones[A][A].setText("X");
+        casillasJugador.add(((A*TAM)+A));
+        casillasSinOcupar.remove(((A*TAM)+A));
+
+        matrizBotones[A][B].setText("O");
+        casillasIA.add(((A*TAM)+B));
+        casillasSinOcupar.remove(((A*TAM)+B));
+
+        matrizBotones[B][A].setText("O");
+        casillasIA.add(((B*TAM)+A));
+        casillasSinOcupar.remove(((B*TAM)+A));
+
+        matrizBotones[B][B].setText("X");
+        casillasJugador.add(((B*TAM)+B));
+        casillasSinOcupar.remove(((B*TAM)+B));
+        if(!jugadorEmpieza){
+            turnoIA();
+        }else{
+            habilitarOpciones("O");
+        }
     }
 
+    private void habilitarOpciones(String simboloContrario){
+        for (int tag : casillasJugador){
+            int fila = tag/TAM;
+            int columna = tag%TAM;
+            for(int index = 0 ; index < 6 ; index++){
+                int modFila = arrayCoordenadas[index].getFila();
+                int modColumna = arrayCoordenadas[index].getColumna();
+                int tagAux = ((fila+modFila)*TAM)+(columna+modColumna);
+                if(tagAux >= 0 && tagAux < TAM*TAM){
+                    int filaAux = tagAux/TAM;
+                    int colAux = tagAux%TAM;
+                    if(matrizBotones[filaAux][colAux].getText().equals(simboloContrario)){
+                        busqueda(filaAux, colAux, arrayCoordenadas[index], simboloContrario);
+                    }
+                }
+            }
+        }
+    }
+
+    private void busqueda(int fila, int columna, CoordenadasBusqueda coordenada, String simboloContrario){
+        int modFila = coordenada.getFila();
+        int modColumna = coordenada.getColumna();
+        int tagAux = ((fila+modFila)*TAM)+(columna+modColumna);
+        if(tagAux >= 0 && tagAux < TAM*TAM){
+            int filaAux = tagAux/TAM;
+            int colAux = tagAux%TAM;
+            if(matrizBotones[filaAux][colAux].getText().equals(simboloContrario)){
+                busqueda(filaAux, colAux, coordenada, simboloContrario);
+            } else if (matrizBotones[filaAux][colAux].getText().equals("")){
+                matrizBotones[filaAux][colAux].setClickable(true);
+            }
+        }
+    }
     void jugada(Button botonPulsado){
         turnoJugador(botonPulsado);
         if (casillasOcupadas < TAM * TAM) {
@@ -59,6 +152,7 @@ class GameEngine {
                 (TextView) pantalla.findViewById(R.id.puntuacionJugador);
         puntuacionJugadorTV.setText(String.format(Locale.getDefault(), "%d", puntuacionJugador));
         botonPulsado.setClickable(false);
+        casillasJugador.add((Integer)botonPulsado.getTag());
         casillasOcupadas++;
         //TODO definir este metodo correctamente
         //girarColindantes(botonPulsado, "X");
@@ -78,6 +172,7 @@ class GameEngine {
         puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));
         matrizBotones[fila][columna].setClickable(false);
         casillasOcupadas++;
+        habilitarOpciones("O");
         //girarColindantes(botones[fila][columna], "O");
     }
 
