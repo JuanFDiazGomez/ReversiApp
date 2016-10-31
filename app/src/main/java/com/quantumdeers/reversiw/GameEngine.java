@@ -77,6 +77,7 @@ class GameEngine {
         }
     }
     private void habilitarOpciones(ArrayList<Integer> casillasContrarias, boolean turnoJugador){
+        int x;
         if (turnoJugador) {
             for (int tag : casillasJugador) {
                 if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
