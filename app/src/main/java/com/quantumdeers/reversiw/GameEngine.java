@@ -13,16 +13,16 @@ class GameEngine {
     private Principal principal;
     private RelativeLayout pantalla;
     private Button[][] matrizBotones;
+    private static int TAM;
+    private boolean jugadorEmpieza;
     private int casillasOcupadas;
     private int puntuacionJugador;
     private int puntuacionIA;
-    private static int TAM;
+    private CoordenadasBusqueda coordenadas;
     private ArrayList<Integer> casillasJugador;
     private ArrayList<Integer> casillasIA;
+    private ArrayList<Integer> casillasLibres;
     private ArrayList<Integer> casillasDisponibles;
-    private static ArrayList<Integer> casillasSinOcupar;
-    private CoordenadasBusqueda[] arrayCoordenadas;
-    private boolean jugadorEmpieza;
 
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal){
         this.principal = principal;
@@ -34,78 +34,145 @@ class GameEngine {
         this.matrizBotones = matrizBotones;
         this.casillasJugador = new ArrayList<>(TAM/2);
         this.casillasIA = new ArrayList<>(TAM/2);
-        this.casillasDisponibles = new ArrayList<>(10);
+        this.casillasLibres = new ArrayList<>(TAM*TAM);
+        this.casillasDisponibles = new ArrayList<>();
         this.jugadorEmpieza=true;
-        this.crearCoordenadas();
+        this.coordenadas = new CoordenadasBusqueda(TAM);
         this.iniciarJuego();
 
     }
-    private void crearCoordenadas(){
-        int index = 0;
-        arrayCoordenadas = new CoordenadasBusqueda[8];
-        arrayCoordenadas[index] = new CoordenadasBusqueda(opcionCoordenadas.N);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.S);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.W);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.E);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.NW);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.NE);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.SW);
-        arrayCoordenadas[++index] = new CoordenadasBusqueda(opcionCoordenadas.SE);
-        casillasSinOcupar = new ArrayList<>(TAM*TAM);
-        for(int tag = 0; tag < TAM*TAM; tag++){
-            casillasSinOcupar.add(tag);
-        }
-    }
     private void iniciarJuego(){
-        for(int fila = 0; fila < TAM; fila++){
-            for(int columna = 0; columna < TAM; columna++){
-                matrizBotones[fila][columna].setClickable(false);
-            }
+        for(int tag = 0; tag < TAM*TAM; tag++){
+            casillasLibres.add(tag);
         }
-        int A = (TAM-1)/2;
-        int B = (TAM)/2;
-        matrizBotones[A][A].setText("X");
-        casillasJugador.add(((A*TAM)+A));
-        casillasSinOcupar.remove(((A*TAM)+A));
+        desactivarBotones(casillasLibres);
+        int fila = (TAM-1)/2;
+        int columna = (TAM)/2;
+        matrizBotones[fila][fila].setText("X");
+        casillasJugador.add(((fila*TAM)+fila));
+        casillasLibres.remove((Integer)((fila*TAM)+fila));
 
-        matrizBotones[A][B].setText("O");
-        casillasIA.add(((A*TAM)+B));
-        casillasSinOcupar.remove(((A*TAM)+B));
+        matrizBotones[fila][columna].setText("O");
+        casillasIA.add(((fila*TAM)+columna));
+        casillasLibres.remove((Integer)((fila*TAM)+columna));
 
-        matrizBotones[B][A].setText("O");
-        casillasIA.add(((B*TAM)+A));
-        casillasSinOcupar.remove(((B*TAM)+A));
+        matrizBotones[columna][fila].setText("O");
+        casillasIA.add(((columna*TAM)+fila));
+        casillasLibres.remove((Integer)((columna*TAM)+fila));
 
-        matrizBotones[B][B].setText("X");
-        casillasJugador.add(((B*TAM)+B));
-        casillasSinOcupar.remove(((B*TAM)+B));
+        matrizBotones[columna][columna].setText("X");
+        casillasJugador.add(((columna*TAM)+columna));
+        casillasLibres.remove((Integer)((columna*TAM)+columna));
+
         if(!jugadorEmpieza){
             turnoIA();
         }else{
-            habilitarOpciones("O");
+            habilitarOpciones(casillasIA, true);
         }
     }
 
-    private void habilitarOpciones(String simboloContrario){
-        for (int tag : casillasJugador){
-            int fila = tag/TAM;
-            int columna = tag%TAM;
-            for(int index = 0 ; index < 6 ; index++){
-                int modFila = arrayCoordenadas[index].getFila();
-                int modColumna = arrayCoordenadas[index].getColumna();
-                int tagAux = ((fila+modFila)*TAM)+(columna+modColumna);
-                if(tagAux >= 0 && tagAux < TAM*TAM){
-                    int filaAux = tagAux/TAM;
-                    int colAux = tagAux%TAM;
-                    if(matrizBotones[filaAux][colAux].getText().equals(simboloContrario)){
-                        busqueda(filaAux, colAux, arrayCoordenadas[index], simboloContrario);
+    private void desactivarBotones(ArrayList<Integer> botonesADesactivar){
+        for(int tag : botonesADesactivar){
+            matrizBotones[tag/TAM][tag%TAM].setClickable(false);
+        }
+    }
+    private void habilitarOpciones(ArrayList<Integer> casillasContrarias, boolean turnoJugador){
+        if (turnoJugador) {
+            int x;
+            for (int tag : casillasJugador) {
+                if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
+                    busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
+                    busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
+                    busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
+                    busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
+                    busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
+                    busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
+                    busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
+                    busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
+                }
+            }
+        }else{
+            casillasDisponibles.clear();
+            casillasDisponibles.trimToSize();
+            for (int tag : casillasIA) {
+                if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
+                    int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
+                    int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
+                    int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
+                    int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
+                    int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
+                    int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
+                    int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
+                    }
+                }
+                if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
+                    int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
+                    if(res>-1){
+                        casillasDisponibles.add(res);
                     }
                 }
             }
         }
     }
 
-    private void busqueda(int fila, int columna, CoordenadasBusqueda coordenada, String simboloContrario){
+    private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias){
+        int nuevoTag = tag+coordenada;
+        if(casillasLibres.indexOf(nuevoTag) > -1){
+            matrizBotones[nuevoTag/TAM][nuevoTag%TAM].setClickable(true);
+            crearToast(Integer.toString(tag));
+            return nuevoTag;
+        }else if (casillasContrarias.indexOf(nuevoTag) > -1){
+            busqueda(nuevoTag, coordenada, casillasContrarias);
+        }
+        return -1;
+        /*
         int modFila = coordenada.getFila();
         int modColumna = coordenada.getColumna();
         int tagAux = ((fila+modFila)*TAM)+(columna+modColumna);
@@ -118,14 +185,16 @@ class GameEngine {
                 matrizBotones[filaAux][colAux].setClickable(true);
             }
         }
+        */
     }
     void jugada(Button botonPulsado){
         turnoJugador(botonPulsado);
         if (casillasOcupadas < TAM * TAM) {
+            habilitarOpciones(casillasJugador, false);
             turnoIA();
         }else{
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
-            crearToast();
+            //crearToast();
             botonAbandonar.setText(R.string.textoReiniciar);
             botonAbandonar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,11 +205,11 @@ class GameEngine {
         }
     }
 
-    private void crearToast() {
+    private void crearToast(String tag) {
         if (puntuacionJugador > puntuacionIA) {
-            Toast.makeText(principal, "You Win!!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(principal, "You Win!!!"+tag, Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(principal, "You Lose!!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(principal, "You Lose!!!"+tag, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -153,26 +222,25 @@ class GameEngine {
         puntuacionJugadorTV.setText(String.format(Locale.getDefault(), "%d", puntuacionJugador));
         botonPulsado.setClickable(false);
         casillasJugador.add((Integer)botonPulsado.getTag());
+        casillasLibres.remove(botonPulsado.getTag());
         casillasOcupadas++;
         //TODO definir este metodo correctamente
         //girarColindantes(botonPulsado, "X");
     }
 
     private void turnoIA() {
-        int fila;
-        int columna;
-        do {
-            fila = (int) (Math.random() * TAM);
-            columna = (int) (Math.random() * TAM);
-        } while (!matrizBotones[fila][columna].isClickable());
-        matrizBotones[fila][columna].setText("O");
+
+        int index = (int) (Math.random() * casillasDisponibles.size());
+        int tag = casillasDisponibles.get(index);
+        matrizBotones[tag/TAM][tag%TAM].setText("O");
+        casillasIA.add(tag);
+        casillasLibres.remove((Integer)tag);
         puntuacionIA++;
         TextView puntuacionIaTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionIA);
         puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));
-        matrizBotones[fila][columna].setClickable(false);
         casillasOcupadas++;
-        habilitarOpciones("O");
+        habilitarOpciones(casillasIA, true);
         //girarColindantes(botones[fila][columna], "O");
     }
 
