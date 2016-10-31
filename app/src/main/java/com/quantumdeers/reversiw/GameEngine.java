@@ -24,7 +24,7 @@ class GameEngine {
     private ArrayList<Integer> casillasLibres;
     private ArrayList<Integer> casillasDisponibles;
 
-    GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal){
+    GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
         this.principal = principal;
         this.pantalla = pantalla;
         this.casillasOcupadas = 0;
@@ -32,143 +32,117 @@ class GameEngine {
         this.puntuacionIA = 0;
         this.TAM = TAM;
         this.matrizBotones = matrizBotones;
-        this.casillasJugador = new ArrayList<>(TAM/2);
-        this.casillasIA = new ArrayList<>(TAM/2);
-        this.casillasLibres = new ArrayList<>(TAM*TAM);
+        this.casillasJugador = new ArrayList<>(TAM / 2);
+        this.casillasIA = new ArrayList<>(TAM / 2);
+        this.casillasLibres = new ArrayList<>(TAM * TAM);
         this.casillasDisponibles = new ArrayList<>();
-        this.jugadorEmpieza=true;
+        this.jugadorEmpieza = true;
         this.coordenadas = new CoordenadasBusqueda(TAM);
         this.iniciarJuego();
 
     }
-    private void iniciarJuego(){
-        for(int tag = 0; tag < TAM*TAM; tag++){
+
+    private void iniciarJuego() {
+        for (int tag = 0; tag < TAM * TAM; tag++) {
             casillasLibres.add(tag);
         }
         desactivarBotones(casillasLibres);
-        int fila = (TAM-1)/2;
-        int columna = (TAM)/2;
+        int fila = (TAM - 1) / 2;
+        int columna = (TAM) / 2;
         matrizBotones[fila][fila].setText("X");
-        casillasJugador.add(((fila*TAM)+fila));
-        casillasLibres.remove((Integer)((fila*TAM)+fila));
+        casillasJugador.add(((fila * TAM) + fila));
+        casillasLibres.remove((Integer) ((fila * TAM) + fila));
 
         matrizBotones[fila][columna].setText("O");
-        casillasIA.add(((fila*TAM)+columna));
-        casillasLibres.remove((Integer)((fila*TAM)+columna));
+        casillasIA.add(((fila * TAM) + columna));
+        casillasLibres.remove((Integer) ((fila * TAM) + columna));
 
         matrizBotones[columna][fila].setText("O");
-        casillasIA.add(((columna*TAM)+fila));
-        casillasLibres.remove((Integer)((columna*TAM)+fila));
+        casillasIA.add(((columna * TAM) + fila));
+        casillasLibres.remove((Integer) ((columna * TAM) + fila));
 
         matrizBotones[columna][columna].setText("X");
-        casillasJugador.add(((columna*TAM)+columna));
-        casillasLibres.remove((Integer)((columna*TAM)+columna));
+        casillasJugador.add(((columna * TAM) + columna));
+        casillasLibres.remove((Integer) ((columna * TAM) + columna));
 
-        if(!jugadorEmpieza){
+        if (!jugadorEmpieza) {
             turnoIA();
-        }else{
-            habilitarOpciones(casillasIA, true);
+        } else {
+            habilitarOpciones(true);
         }
     }
 
-    private void desactivarBotones(ArrayList<Integer> botonesADesactivar){
-        for(int tag : botonesADesactivar){
-            matrizBotones[tag/TAM][tag%TAM].setClickable(false);
+    private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
+        for (int tag : botonesADesactivar) {
+            matrizBotones[tag / TAM][tag % TAM].setClickable(false);
         }
     }
-    private void habilitarOpciones(ArrayList<Integer> casillasContrarias, boolean turnoJugador){
-        int x;
-        if (turnoJugador) {
-            for (int tag : casillasJugador) {
-                if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
-                    busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
+
+    private void habilitarOpciones(boolean turnoJugador) {
+        ArrayList<Integer> casillasContrarias = (turnoJugador) ? casillasIA : casillasJugador;
+        ArrayList<Integer> casillasPropias = (turnoJugador) ? casillasJugador : casillasIA;
+        desactivarBotones(casillasDisponibles);
+        casillasDisponibles.clear();
+        for (int tag : casillasPropias) {
+            if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
+                int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
-                    busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
-                    busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
-                    busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
-                    busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
-                    busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
-                    busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
-                    busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
+
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
+                int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
             }
-        }else{
-            casillasDisponibles.clear();
-            casillasDisponibles.trimToSize();
-            for (int tag : casillasIA) {
-                if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
-                    int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
-
+            if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
+                int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
-                    int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
+                int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
-                    int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
+                int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
-                    int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
+                int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
-                    int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
+                int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
-                if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
-                    int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
-                    int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
-                    int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
-                    if(res>-1){
-                        casillasDisponibles.add(res);
-                    }
+            }
+            if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
+                int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
+                if (res > -1) {
+                    casillasDisponibles.add(res);
                 }
             }
         }
     }
 
-    private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias){
-        int nuevoTag = tag+coordenada;
-        if(casillasLibres.indexOf(nuevoTag) > -1){
-            matrizBotones[nuevoTag/TAM][nuevoTag%TAM].setClickable(true);
+    private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
+        int nuevoTag = tag + coordenada;
+        if (casillasLibres.indexOf(nuevoTag) > -1) {
+            matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
             crearToast(Integer.toString(tag));
             return nuevoTag;
-        }else if (casillasContrarias.indexOf(nuevoTag) > -1){
+        } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
             busqueda(nuevoTag, coordenada, casillasContrarias);
         }
         return -1;
@@ -187,12 +161,13 @@ class GameEngine {
         }
         */
     }
-    void jugada(Button botonPulsado){
+
+    void jugada(Button botonPulsado) {
         turnoJugador(botonPulsado);
         if (casillasOcupadas < TAM * TAM) {
-            habilitarOpciones(casillasJugador, false);
+            habilitarOpciones(false);
             turnoIA();
-        }else{
+        } else {
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
             //crearToast();
             botonAbandonar.setText(R.string.textoReiniciar);
@@ -207,9 +182,9 @@ class GameEngine {
 
     private void crearToast(String tag) {
         if (puntuacionJugador > puntuacionIA) {
-            Toast.makeText(principal, "You Win!!!"+tag, Toast.LENGTH_LONG).show();
+            Toast.makeText(principal, "You Win!!!" + tag, Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(principal, "You Lose!!!"+tag, Toast.LENGTH_LONG).show();
+            Toast.makeText(principal, "You Lose!!!" + tag, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -221,7 +196,7 @@ class GameEngine {
                 (TextView) pantalla.findViewById(R.id.puntuacionJugador);
         puntuacionJugadorTV.setText(String.format(Locale.getDefault(), "%d", puntuacionJugador));
         botonPulsado.setClickable(false);
-        casillasJugador.add((Integer)botonPulsado.getTag());
+        casillasJugador.add((Integer) botonPulsado.getTag());
         casillasLibres.remove(botonPulsado.getTag());
         casillasOcupadas++;
         //TODO definir este metodo correctamente
@@ -232,15 +207,15 @@ class GameEngine {
 
         int index = (int) (Math.random() * casillasDisponibles.size());
         int tag = casillasDisponibles.get(index);
-        matrizBotones[tag/TAM][tag%TAM].setText("O");
+        matrizBotones[tag / TAM][tag % TAM].setText("O");
         casillasIA.add(tag);
-        casillasLibres.remove((Integer)tag);
+        casillasLibres.remove((Integer) tag);
         puntuacionIA++;
         TextView puntuacionIaTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionIA);
         puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));
         casillasOcupadas++;
-        habilitarOpciones(casillasIA, true);
+        habilitarOpciones(true);
         //girarColindantes(botones[fila][columna], "O");
     }
 
