@@ -78,7 +78,6 @@ class GameEngine {
     }
     private void habilitarOpciones(ArrayList<Integer> casillasContrarias, boolean turnoJugador){
         if (turnoJugador) {
-            int x;
             for (int tag : casillasJugador) {
                 if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
                     busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
