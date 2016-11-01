@@ -91,7 +91,7 @@ class GameEngine {
         casillasOrigen.clear();
         coordenadaOrigenSeleccion.clear();
         for (int tag : casillasPropias) {
-            if(tag%TAM != (TAM-1)){
+            if(tag%TAM < (TAM-1)){
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
                     if (res > -1) {
@@ -122,7 +122,6 @@ class GameEngine {
                     }
                 }
             }
-
             if(tag%TAM != 0){
                 if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
                     int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
@@ -184,6 +183,29 @@ class GameEngine {
                 if(nuevoTag/TAM == tag/TAM) {
                     if (casillasLibres.indexOf(nuevoTag) > -1) {
                         matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
+                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
+                        return nuevoTag;
+                    }else if (casillasContrarias.indexOf(nuevoTag) > -1) {
+                            busqueda(nuevoTag + coordenada, coordenada, casillasContrarias);
+                    }
+                }
+            }else{
+                if(Math.abs((tag/TAM) - (nuevoTag/TAM)) == 1){
+                    if (casillasLibres.indexOf(nuevoTag) > -1) {
+                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
+                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
+                        return nuevoTag;
+                    }else if (casillasContrarias.indexOf(nuevoTag) > -1) {
+                            busqueda(nuevoTag + coordenada, coordenada, casillasContrarias);
+                    }
+                }
+            }
+
+        }/* if(Math.abs(coordenada)==7){
+                if(nuevoTag/TAM == (tag/TAM)-1 || ((nuevoTag/TAM)-1) == tag/TAM) {
+                    if (casillasLibres.indexOf(nuevoTag) > -1) {
+                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
+                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
                         return nuevoTag;
                     }
                     if (casillasContrarias.indexOf(nuevoTag) > -1) {
@@ -196,6 +218,7 @@ class GameEngine {
             }else{
                 if (casillasLibres.indexOf(nuevoTag) > -1) {
                     matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
+                    matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
                     return nuevoTag;
                 }
                 if (casillasContrarias.indexOf(nuevoTag) > -1) {
@@ -247,9 +270,8 @@ class GameEngine {
                 habilitarOpciones(false);
                 if(casillasDisponibles.size()>0){
                     turnoIA();
-                }else{
-                    habilitarOpciones(true);
                 }
+                habilitarOpciones(true);
             }while(casillasDisponibles.size()<0);
         } else {
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
@@ -264,18 +286,17 @@ class GameEngine {
         }
     }
 
-    private void crearToast(String tag) {
+    /*private void crearToast(String tag) {
         if (puntuacionJugador > puntuacionIA) {
             Toast.makeText(principal, "You Win!!!" + tag, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(principal, "You Lose!!!" + tag, Toast.LENGTH_LONG).show();
         }
 
-    }
+    }*/
 
     private void turnoJugador(Button botonPulsado) {
         botonPulsado.setText("X");
-        voltearCasillas((Integer)botonPulsado.getTag());
         puntuacionJugador++;
         TextView puntuacionJugadorTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionJugador);
@@ -284,6 +305,7 @@ class GameEngine {
         casillasJugador.add((Integer) botonPulsado.getTag());
         casillasLibres.remove(botonPulsado.getTag());
         casillasOcupadas++;
+        voltearCasillas((Integer)botonPulsado.getTag());
         //TODO definir este metodo correctamente
         //girarColindantes(botonPulsado, "X");
     }
@@ -292,18 +314,18 @@ class GameEngine {
         String simbolo = (String) matrizBotones[tag / TAM][tag % TAM].getText();
         for(int index = 0; index < casillasDisponibles.size(); index++ ){
             int tagAux = casillasDisponibles.get(index);
-            if(tagAux == tag.intValue()){
+            if(tagAux == tag){
                 int tagOrigen = casillasOrigen.get(index);
-                int coordenada = coordenadaOrigenSeleccion.get(index).intValue();
+                int coordenada = coordenadaOrigenSeleccion.get(index);
                 coordenada*=-1;
                 for(int x = tagAux+coordenada; x != tagOrigen ; x+=coordenada){
                     matrizBotones[x/TAM][x%TAM].setText(simbolo);
                     if(simbolo.equals("X")){
-                        casillasIA.remove(new Integer(x));
-                        casillasJugador.add(new Integer(x));
+                        casillasIA.remove(Integer.valueOf(x));
+                        casillasJugador.add(x);
                     }else{
-                        casillasIA.add(new Integer(x));
-                        casillasJugador.remove(new Integer(x));
+                        casillasIA.add(x);
+                        casillasJugador.remove(Integer.valueOf(x));
                     }
                 }
             }
@@ -315,7 +337,7 @@ class GameEngine {
         int index = (int) (Math.random() * casillasDisponibles.size());
         int tag = casillasDisponibles.get(index);
         matrizBotones[tag / TAM][tag % TAM].setText("O");
-        voltearCasillas(tag);
+
         casillasIA.add(tag);
         casillasLibres.remove((Integer) tag);
         puntuacionIA++;
@@ -323,7 +345,7 @@ class GameEngine {
                 (TextView) pantalla.findViewById(R.id.puntuacionIA);
         puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));
         casillasOcupadas++;
-        habilitarOpciones(true);
+        voltearCasillas(tag);
         //girarColindantes(botones[fila][columna], "O");
     }
 
