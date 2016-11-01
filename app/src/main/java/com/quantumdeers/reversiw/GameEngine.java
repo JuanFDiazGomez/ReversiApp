@@ -84,6 +84,52 @@ class GameEngine {
         desactivarBotones(casillasDisponibles);
         casillasDisponibles.clear();
         for (int tag : casillasPropias) {
+            if(tag%TAM != (TAM-1)){
+                if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
+                    int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+
+                if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
+                    int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+
+                if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
+                    int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+            }
+
+            if(tag%TAM != 0){
+                if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
+                    int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+
+                if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
+                    int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+
+                if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
+                    int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
+                    if (res > -1) {
+                        casillasDisponibles.add(res);
+                    }
+                }
+            }
+
             if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
                 int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
                 if (res > -1) {
@@ -97,53 +143,23 @@ class GameEngine {
                     casillasDisponibles.add(res);
                 }
             }
-            if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
-                int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
-            if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
-                int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
-            if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
-                int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
-            if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
-                int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
-            if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
-                int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
-            if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
-                int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(res);
-                }
-            }
         }
     }
 
     private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
         int nuevoTag = tag + coordenada;
         if (casillasLibres.indexOf(nuevoTag) > -1) {
-            matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
-            crearToast(Integer.toString(tag));
+            matrizBotones[nuevoTag/TAM][nuevoTag%TAM].setClickable(true);
+            crearToast(Integer.toString(nuevoTag));
             return nuevoTag;
         } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-            busqueda(nuevoTag, coordenada, casillasContrarias);
+            if(Math.abs(coordenada) != TAM) {
+                if(nuevoTag%TAM != (TAM-1) && nuevoTag%TAM != 0) {
+                    busqueda(nuevoTag, coordenada, casillasContrarias);
+                }
+            }else {
+                busqueda(nuevoTag, coordenada, casillasContrarias);
+            }
         }
         return -1;
         /*
@@ -165,8 +181,14 @@ class GameEngine {
     void jugada(Button botonPulsado) {
         turnoJugador(botonPulsado);
         if (casillasOcupadas < TAM * TAM) {
-            habilitarOpciones(false);
-            turnoIA();
+            do{
+                habilitarOpciones(false);
+                if(casillasDisponibles.size()>0){
+                    turnoIA();
+                }else{
+                    habilitarOpciones(true);
+                }
+            }while(casillasDisponibles.size()<0);
         } else {
             Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
             //crearToast();
