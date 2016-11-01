@@ -83,7 +83,11 @@ class GameBoardCreator {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View botonPulsado) {
-                gameEngine.jugada((Button) botonPulsado);
+                try {
+                    gameEngine.jugada((Button) botonPulsado);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         return boton;

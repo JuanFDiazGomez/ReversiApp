@@ -3,6 +3,15 @@ package com.quantumdeers.reversiw;
 enum opcionCoordenadas{
     N,S,W,E,NW,SW,NE,SE
 }
+class origenSeleccion{
+    public int origen;
+    public int seleccion;
+
+    public origenSeleccion(int origen, int seleccion){
+        this.origen = origen;
+        this.seleccion = seleccion;
+    }
+}
 
 public class CoordenadasBusqueda {
     private int TAM;
