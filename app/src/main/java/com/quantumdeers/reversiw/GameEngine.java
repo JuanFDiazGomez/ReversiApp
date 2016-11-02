@@ -265,7 +265,7 @@ class GameEngine {
 
     void jugada(Button botonPulsado) {
         turnoJugador(botonPulsado);
-        if (casillasOcupadas < TAM * TAM) {
+        if (casillasIA.size()+casillasJugador.size() < TAM * TAM) {
             do{
                 habilitarOpciones(false);
                 if(casillasDisponibles.size()>0){
