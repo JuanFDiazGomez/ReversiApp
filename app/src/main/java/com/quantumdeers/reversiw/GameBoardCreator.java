@@ -19,7 +19,7 @@ class GameBoardCreator {
     GameBoardCreator(Principal principal) {
         this.principal = principal;
         this.pantalla = crearPantalla();
-        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal);
+        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal, true);
     }
 
     RelativeLayout getPantalla() {
@@ -85,7 +85,12 @@ class GameBoardCreator {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View botonPulsado) {
-                gameEngine.jugada((Button) botonPulsado);
+                //gameEngine.jugada((Button) botonPulsado);
+                //gameEngine.execute((Button) botonPulsado);
+
+                gameEngine = new GameEngine(gameEngine);
+                gameEngine.execute((Button)botonPulsado);
+
             }
         });
         return boton;

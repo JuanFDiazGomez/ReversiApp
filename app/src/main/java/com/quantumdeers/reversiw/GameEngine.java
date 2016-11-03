@@ -1,5 +1,6 @@
 package com.quantumdeers.reversiw;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
-class GameEngine {
+class GameEngine extends AsyncTask<Button, String, Void> {
     private Principal principal;
     private RelativeLayout pantalla;
     private Button[][] matrizBotones;
@@ -27,7 +28,7 @@ class GameEngine {
     private ArrayList<Integer> coordenadaOrigenSeleccion;
     private ArrayList<origenSeleccion> casillasDisponibles;
 
-    GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
+    GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal, Boolean iniciar) {
         this.principal = principal;
         this.pantalla = pantalla;
         this.casillasOcupadas = 0;
@@ -43,10 +44,49 @@ class GameEngine {
         this.coordenadaOrigenSeleccion = new ArrayList<>();
         this.jugadorEmpieza = true;
         this.coordenadas = new CoordenadasBusqueda(TAM);
-        this.iniciarJuego();
+        if(iniciar){
+            this.iniciarJuego();
+        }
+
 
     }
+    GameEngine(GameEngine ge) {
+        this.principal = ge.principal;
+        this.pantalla = ge.pantalla;
+        this.casillasOcupadas = ge.casillasOcupadas;
+        this.puntuacionJugador = ge.puntuacionJugador;
+        this.puntuacionIA = ge.puntuacionIA;
+        this.TAM = ge.TAM;
+        this.matrizBotones = ge.matrizBotones;
+        this.casillasJugador = ge.casillasJugador;
+        this.casillasIA = ge.casillasIA;
+        this.casillasLibres = ge.casillasLibres;
+        this.casillasDisponibles = ge.casillasDisponibles;
+        this.casillasOrigen = ge.casillasOrigen;
+        this.coordenadaOrigenSeleccion = ge.coordenadaOrigenSeleccion;
+        this.jugadorEmpieza = ge.jugadorEmpieza;
+        this.coordenadas = ge.coordenadas;
+        /*if(iniciar){
+            this.iniciarJuego();
+        }*/
 
+
+    }
+    protected Void doInBackground(Button... boton) {
+        jugada(boton[0]);
+        /*cancel(true);
+        if(isCancelled()){
+            return null;
+        }*/
+        return null;
+        //return null;
+    }
+    protected void onProgressUpdate(String... progress) {
+        int tag = Integer.parseInt(progress[0]);
+        int fila = tag/TAM;
+        int columna = tag%TAM;
+        matrizBotones[fila][columna].setText(progress[1]);
+    }
     private void iniciarJuego() {
         for (int tag = 0; tag < TAM * TAM; tag++) {
             casillasLibres.add(tag);
@@ -57,19 +97,15 @@ class GameEngine {
         matrizBotones[fila][fila].setText("X");
         casillasJugador.add(((fila * TAM) + fila));
         casillasLibres.remove((Integer) ((fila * TAM) + fila));
-
         matrizBotones[fila][columna].setText("O");
         casillasIA.add(((fila * TAM) + columna));
         casillasLibres.remove((Integer) ((fila * TAM) + columna));
-
         matrizBotones[columna][fila].setText("O");
         casillasIA.add(((columna * TAM) + fila));
         casillasLibres.remove((Integer) ((columna * TAM) + fila));
-
         matrizBotones[columna][columna].setText("X");
         casillasJugador.add(((columna * TAM) + columna));
         casillasLibres.remove((Integer) ((columna * TAM) + columna));
-
         if (!jugadorEmpieza) {
             turnoIA();
         } else {
@@ -80,7 +116,15 @@ class GameEngine {
     private void desactivarBotones(ArrayList<origenSeleccion> botonesADesactivar) {
         for (origenSeleccion tag : botonesADesactivar) {
             matrizBotones[tag.seleccion / TAM][tag.seleccion % TAM].setClickable(false);
-            if(casillasLibres.indexOf(tag) > -1){matrizBotones[tag.seleccion / TAM][tag.seleccion % TAM].setText("");}
+            if(casillasLibres.indexOf(tag.seleccion) > -1){
+                publishProgress(Integer.toString(tag.seleccion),"");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //matrizBotones[tag.seleccion / TAM][tag.seleccion % TAM].setText("");
+            }
         }
     }
 
@@ -100,10 +144,17 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
                     if (res > -1) {
+
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
                         /*casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.E());*/
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Este: "+res);
                     }
@@ -115,7 +166,13 @@ class GameEngine {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.NE());
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Noreste: "+res);
                     }
@@ -127,7 +184,13 @@ class GameEngine {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SE());
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Sureste: "+res);
                     }
@@ -140,7 +203,13 @@ class GameEngine {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
                         /*casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.W());*/
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Oeste: "+res);
                     }
@@ -152,7 +221,13 @@ class GameEngine {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
                         /*casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.NW());*/
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Noroeste: "+res);
                     }
@@ -164,7 +239,13 @@ class GameEngine {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SW());
-                        matrizBotones[res/TAM][res%TAM].setText("*");
+                        publishProgress(Integer.toString(res),"*");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Suroeste: "+res);
                     }
@@ -177,7 +258,13 @@ class GameEngine {
                     casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.N());
-                    matrizBotones[res/TAM][res%TAM].setText("*");
+                    publishProgress(Integer.toString(res),"*");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //matrizBotones[res/TAM][res%TAM].setText("*");
                     matrizBotones[res/TAM][res%TAM].setClickable(true);
                     Log.v("CrearDisponibles", "\t Norte: "+res);
                 }
@@ -189,7 +276,13 @@ class GameEngine {
                     casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.S());
-                    matrizBotones[res/TAM][res%TAM].setText("*");
+                    publishProgress(Integer.toString(res),"*");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //matrizBotones[res/TAM][res%TAM].setText("*");
                     matrizBotones[res/TAM][res%TAM].setClickable(true);
                     Log.v("CrearDisponibles", "\t Sur: "+res);
                 }
@@ -314,11 +407,17 @@ class GameEngine {
     }*/
 
     private void turnoJugador(Button botonPulsado) {
-        botonPulsado.setText("X");
+        //botonPulsado.setText("X");
+        publishProgress(((Integer) botonPulsado.getTag()).toString(),"X");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         puntuacionJugador++;
-        TextView puntuacionJugadorTV =
-                (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-        puntuacionJugadorTV.setText(String.format(Locale.getDefault(), "%d", puntuacionJugador));
+        //TextView puntuacionJugadorTV =
+        //        (TextView) pantalla.findViewById(R.id.puntuacionJugador);
+        //puntuacionJugadorTV.setText(String.format(Locale.getDefault(), "%d", puntuacionJugador));
         botonPulsado.setClickable(false);
         casillasJugador.add((Integer) botonPulsado.getTag());
         casillasLibres.remove(botonPulsado.getTag());
@@ -336,8 +435,14 @@ class GameEngine {
                 /*int tagOrigen = casillasOrigen.get(index);
                 int coordenada = coordenadaOrigenSeleccion.get(index);*/
                 //coordenada*=-1;
-                for(int botonOrigen = tagAux.origen + tagAux.seleccion; botonOrigen != tagAux.seleccion ; botonOrigen+=tagAux.coordenada){
-                    matrizBotones[botonOrigen/TAM][botonOrigen%TAM].setText(simbolo);
+                for(int botonOrigen = tagAux.origen + tagAux.coordenada; botonOrigen != tagAux.seleccion ; botonOrigen+=tagAux.coordenada){
+                    publishProgress(Integer.toString(botonOrigen),"X");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //matrizBotones[botonOrigen/TAM][botonOrigen%TAM].setText(simbolo);
                     if(simbolo.equals("X")){
                         casillasIA.remove(Integer.valueOf(botonOrigen));
                         casillasJugador.add(botonOrigen);
@@ -354,14 +459,20 @@ class GameEngine {
 
         int index = (int) (Math.random() * casillasDisponibles.size());
         int tag = casillasDisponibles.get(index).seleccion;
-        matrizBotones[tag / TAM][tag % TAM].setText("O");
+        publishProgress(Integer.toString(tag),"O");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //matrizBotones[tag / TAM][tag % TAM].setText("O");
 
         casillasIA.add(tag);
         casillasLibres.remove((Integer) tag);
         puntuacionIA++;
-        TextView puntuacionIaTV =
+        /*TextView puntuacionIaTV =
                 (TextView) pantalla.findViewById(R.id.puntuacionIA);
-        puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));
+        puntuacionIaTV.setText(String.format(Locale.getDefault(), "%d", puntuacionIA));*/
         casillasOcupadas++;
         voltearCasillas(tag);
         //girarColindantes(botones[fila][columna], "O");
