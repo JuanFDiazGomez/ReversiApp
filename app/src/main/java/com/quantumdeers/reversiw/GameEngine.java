@@ -25,7 +25,7 @@ class GameEngine {
     private ArrayList<Integer> casillasLibres;
     private ArrayList<Integer> casillasOrigen;
     private ArrayList<Integer> coordenadaOrigenSeleccion;
-    private ArrayList<Integer> casillasDisponibles;
+    private ArrayList<origenSeleccion> casillasDisponibles;
 
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
         this.principal = principal;
@@ -51,7 +51,7 @@ class GameEngine {
         for (int tag = 0; tag < TAM * TAM; tag++) {
             casillasLibres.add(tag);
         }
-        desactivarBotones(casillasLibres);
+        //desactivarBotones(casillasLibres);
         int fila = (TAM - 1) / 2;
         int columna = (TAM) / 2;
         matrizBotones[fila][fila].setText("X");
@@ -77,10 +77,10 @@ class GameEngine {
         }
     }
 
-    private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
-        for (int tag : botonesADesactivar) {
-            matrizBotones[tag / TAM][tag % TAM].setClickable(false);
-            if(casillasLibres.indexOf(tag) > -1){matrizBotones[tag / TAM][tag % TAM].setText("");}
+    private void desactivarBotones(ArrayList<origenSeleccion> botonesADesactivar) {
+        for (origenSeleccion tag : botonesADesactivar) {
+            matrizBotones[tag.seleccion / TAM][tag.seleccion % TAM].setClickable(false);
+            if(casillasLibres.indexOf(tag) > -1){matrizBotones[tag.seleccion / TAM][tag.seleccion % TAM].setText("");}
         }
     }
 
@@ -100,9 +100,9 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
-                        casillasOrigen.add(tag);
-                        coordenadaOrigenSeleccion.add(coordenadas.E());
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
+                        /*casillasOrigen.add(tag);
+                        coordenadaOrigenSeleccion.add(coordenadas.E());*/
                         matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Este: "+res);
@@ -112,7 +112,7 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
                     int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.NE());
                         matrizBotones[res/TAM][res%TAM].setText("*");
@@ -124,7 +124,7 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
                     int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SE());
                         matrizBotones[res/TAM][res%TAM].setText("*");
@@ -137,9 +137,9 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
                     int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
-                        casillasOrigen.add(tag);
-                        coordenadaOrigenSeleccion.add(coordenadas.W());
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
+                        /*casillasOrigen.add(tag);
+                        coordenadaOrigenSeleccion.add(coordenadas.W());*/
                         matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Oeste: "+res);
@@ -149,9 +149,9 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
                     int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
-                        casillasOrigen.add(tag);
-                        coordenadaOrigenSeleccion.add(coordenadas.NW());
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
+                        /*casillasOrigen.add(tag);
+                        coordenadaOrigenSeleccion.add(coordenadas.NW());*/
                         matrizBotones[res/TAM][res%TAM].setText("*");
                         matrizBotones[res/TAM][res%TAM].setClickable(true);
                         Log.v("CrearDisponibles", "\t Noroeste: "+res);
@@ -161,7 +161,7 @@ class GameEngine {
                 if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
                     int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
                     if (res > -1) {
-                        casillasDisponibles.add(res);
+                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SW());
                         matrizBotones[res/TAM][res%TAM].setText("*");
@@ -174,7 +174,7 @@ class GameEngine {
             if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
                 int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
                 if (res > -1) {
-                    casillasDisponibles.add(res);
+                    casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.N());
                     matrizBotones[res/TAM][res%TAM].setText("*");
@@ -186,7 +186,7 @@ class GameEngine {
             if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
                 int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
                 if (res > -1) {
-                    casillasDisponibles.add(res);
+                    casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.S());
                     matrizBotones[res/TAM][res%TAM].setText("*");
@@ -331,12 +331,12 @@ class GameEngine {
     private void voltearCasillas(Integer tag) {
         String simbolo = (String) matrizBotones[tag / TAM][tag % TAM].getText();
         for(int index = 0; index < casillasDisponibles.size(); index++ ){
-            int tagAux = casillasDisponibles.get(index);
-            if(tagAux == tag){
-                int tagOrigen = casillasOrigen.get(index);
-                int coordenada = coordenadaOrigenSeleccion.get(index);
+            origenSeleccion tagAux = casillasDisponibles.get(index);
+            if(tagAux.seleccion == tag){
+                /*int tagOrigen = casillasOrigen.get(index);
+                int coordenada = coordenadaOrigenSeleccion.get(index);*/
                 //coordenada*=-1;
-                for(int botonOrigen = tagOrigen+coordenada; botonOrigen != tagAux ; botonOrigen+=coordenada){
+                for(int botonOrigen = tagAux.origen + tagAux.seleccion; botonOrigen != tagAux.seleccion ; botonOrigen+=tagAux.coordenada){
                     matrizBotones[botonOrigen/TAM][botonOrigen%TAM].setText(simbolo);
                     if(simbolo.equals("X")){
                         casillasIA.remove(Integer.valueOf(botonOrigen));
@@ -353,7 +353,7 @@ class GameEngine {
     private void turnoIA() {
 
         int index = (int) (Math.random() * casillasDisponibles.size());
-        int tag = casillasDisponibles.get(index);
+        int tag = casillasDisponibles.get(index).seleccion;
         matrizBotones[tag / TAM][tag % TAM].setText("O");
 
         casillasIA.add(tag);

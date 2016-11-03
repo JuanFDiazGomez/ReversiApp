@@ -6,10 +6,12 @@ enum opcionCoordenadas{
 class origenSeleccion{
     public int origen;
     public int seleccion;
+    public int coordenada;
 
-    public origenSeleccion(int origen, int seleccion){
+    public origenSeleccion(int origen, int seleccion, int coordenada){
         this.origen = origen;
         this.seleccion = seleccion;
+        this.coordenada = coordenada;
     }
 }
 

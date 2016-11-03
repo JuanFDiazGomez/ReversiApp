@@ -59,6 +59,7 @@ class GameBoardCreator {
     private Button crearBoton(int fila, int columna) {
         Button boton = new Button(principal);
         boton.setLayoutParams(crearLayoutParams());
+        boton.setClickable(false);
         boton.setText("");
         boton.setTag((fila * TAM) + columna);
         boton.setTextSize((float) (250 / TAM));
