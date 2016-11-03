@@ -1,5 +1,6 @@
 package com.quantumdeers.reversiw;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -90,7 +91,11 @@ class GameEngine {
         casillasDisponibles.clear();
         casillasOrigen.clear();
         coordenadaOrigenSeleccion.clear();
+        int i = 0;
+        Log.v("CrearDisponibles", "------------Turno "+ ++i +"------------");
         for (int tag : casillasPropias) {
+            Log.v("CrearDisponibles", "soy: "+tag);
+            Log.v("CrearDisponibles", "He realizado disponibles: ");
             if(tag%TAM < (TAM-1)){
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
@@ -99,6 +104,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.E());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Este: "+res);
                     }
                 }
 
@@ -109,6 +116,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.NE());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Noreste: "+res);
                     }
                 }
 
@@ -119,6 +128,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SE());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Sureste: "+res);
                     }
                 }
             }
@@ -130,6 +141,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.W());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Oeste: "+res);
                     }
                 }
 
@@ -140,6 +153,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.NW());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Noroeste: "+res);
                     }
                 }
 
@@ -150,6 +165,8 @@ class GameEngine {
                         casillasOrigen.add(tag);
                         coordenadaOrigenSeleccion.add(coordenadas.SW());
                         matrizBotones[res/TAM][res%TAM].setText("*");
+                        matrizBotones[res/TAM][res%TAM].setClickable(true);
+                        Log.v("CrearDisponibles", "\t Suroeste: "+res);
                     }
                 }
             }
@@ -161,6 +178,8 @@ class GameEngine {
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.N());
                     matrizBotones[res/TAM][res%TAM].setText("*");
+                    matrizBotones[res/TAM][res%TAM].setClickable(true);
+                    Log.v("CrearDisponibles", "\t Norte: "+res);
                 }
 
             }
@@ -171,8 +190,11 @@ class GameEngine {
                     casillasOrigen.add(tag);
                     coordenadaOrigenSeleccion.add(coordenadas.S());
                     matrizBotones[res/TAM][res%TAM].setText("*");
+                    matrizBotones[res/TAM][res%TAM].setClickable(true);
+                    Log.v("CrearDisponibles", "\t Sur: "+res);
                 }
             }
+            Log.v("CrearDisponibles", "-----------------------------");
         }
     }
 
@@ -182,21 +204,17 @@ class GameEngine {
             if(Math.abs(coordenada)==1){
                 if(nuevoTag/TAM == tag/TAM) {
                     if (casillasLibres.indexOf(nuevoTag) > -1) {
-                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
-                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
                         return nuevoTag;
                     }else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                            busqueda(nuevoTag + coordenada, coordenada, casillasContrarias);
+                            busqueda(nuevoTag, coordenada, casillasContrarias);
                     }
                 }
             }else{
                 if(Math.abs((tag/TAM) - (nuevoTag/TAM)) == 1){
                     if (casillasLibres.indexOf(nuevoTag) > -1) {
-                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setClickable(true);
-                        matrizBotones[nuevoTag / TAM][nuevoTag % TAM].setText("*");
                         return nuevoTag;
                     }else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                            busqueda(nuevoTag + coordenada, coordenada, casillasContrarias);
+                            busqueda(nuevoTag, coordenada, casillasContrarias);
                     }
                 }
             }
@@ -317,15 +335,15 @@ class GameEngine {
             if(tagAux == tag){
                 int tagOrigen = casillasOrigen.get(index);
                 int coordenada = coordenadaOrigenSeleccion.get(index);
-                coordenada*=-1;
-                for(int x = tagAux+coordenada; x != tagOrigen ; x+=coordenada){
-                    matrizBotones[x/TAM][x%TAM].setText(simbolo);
+                //coordenada*=-1;
+                for(int botonOrigen = tagOrigen+coordenada; botonOrigen != tagAux ; botonOrigen+=coordenada){
+                    matrizBotones[botonOrigen/TAM][botonOrigen%TAM].setText(simbolo);
                     if(simbolo.equals("X")){
-                        casillasIA.remove(Integer.valueOf(x));
-                        casillasJugador.add(x);
+                        casillasIA.remove(Integer.valueOf(botonOrigen));
+                        casillasJugador.add(botonOrigen);
                     }else{
-                        casillasIA.add(x);
-                        casillasJugador.remove(Integer.valueOf(x));
+                        casillasIA.add(botonOrigen);
+                        casillasJugador.remove(Integer.valueOf(botonOrigen));
                     }
                 }
             }
