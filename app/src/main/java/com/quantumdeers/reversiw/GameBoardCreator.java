@@ -1,5 +1,6 @@
 package com.quantumdeers.reversiw;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,10 +87,10 @@ class GameBoardCreator {
             @Override
             public void onClick(View botonPulsado) {
                 //gameEngine.jugada((Button) botonPulsado);
-                //gameEngine.execute((Button) botonPulsado);
-
-                gameEngine = new GameEngine(gameEngine);
-                gameEngine.execute((Button)botonPulsado);
+                //gameEngine.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,(Button) botonPulsado);
+                gameEngine.getTareaAsincrona().execute((Button) botonPulsado);
+                /*gameEngine = new GameEngine(gameEngine);
+                gameEngine.execute((Button)botonPulsado);*/
 
             }
         });
