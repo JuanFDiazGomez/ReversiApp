@@ -12,8 +12,10 @@ class GameEngine {
     private Principal principal;
     private RelativeLayout pantalla;
     private Button[][] matrizBotones;
+    private TextView TVPuntuacionJugador;
+    private TextView TVPuntuacionIA;
     private static int TAM;
-    private boolean jugadorEmpieza;
+    private boolean turnoJugador;
     private CoordenadasBusqueda coordenadas;
     private ArrayList<Integer> casillasJugador;
     private ArrayList<Integer> casillasIA;
@@ -33,9 +35,9 @@ class GameEngine {
         this.casillasDisponibles = new ArrayList<>();
         this.casillasOrigen = new ArrayList<>();
         this.coordenadaOrigenSeleccion = new ArrayList<>();
-        this.jugadorEmpieza = true;
+        this.turnoJugador = true;
         this.coordenadas = new CoordenadasBusqueda(TAM);
-        if (!jugadorEmpieza) {
+        if (!turnoJugador) {
             //this.getTareaAsincrona().execute(empiezaIA());
         }
     }
@@ -51,7 +53,8 @@ class GameEngine {
         }
 
         void jugada(Button botonPulsado) {
-            if (jugadorEmpieza) {
+
+            if (turnoJugador) {
                 turnoJugador(botonPulsado);
                 habilitarOpciones(false);
             }
@@ -59,6 +62,7 @@ class GameEngine {
             if (casillasDisponibles.size() > 0) {
                 turnoIA();
             }
+
             habilitarOpciones(true);
         }
 
@@ -70,6 +74,8 @@ class GameEngine {
         }
 
         protected void onPostExecute(Void nada) {
+            TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
+            TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
             if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
                 Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
                 botonAbandonar.setText(R.string.textoReiniciar);
@@ -318,7 +324,7 @@ class GameEngine {
         matrizBotones[columna][columna].setText("X");
         casillasJugador.add(((columna * TAM) + columna));
         casillasLibres.remove((Integer) ((columna * TAM) + columna));
-        if (!jugadorEmpieza) {
+        if (!turnoJugador) {
             //turnoIA();
         } else {
             habilitarOpciones(true);
