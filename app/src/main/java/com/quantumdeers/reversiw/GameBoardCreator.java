@@ -20,7 +20,7 @@ class GameBoardCreator {
     GameBoardCreator(Principal principal) {
         this.principal = principal;
         this.pantalla = crearPantalla();
-        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal, true);
+        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal);
     }
 
     RelativeLayout getPantalla() {
