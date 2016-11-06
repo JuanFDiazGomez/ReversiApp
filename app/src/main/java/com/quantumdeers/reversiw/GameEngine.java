@@ -35,7 +35,7 @@ class GameEngine {
         this.coordenadas = new CoordenadasBusqueda(TAM);
         iniciarJuego();
         if (!turnoJugador) {
-            //this.getTareaAsincrona().execute(empiezaIA());
+            this.getTareaAsincrona().execute((int) (Math.random()*casillasDisponibles.size()));
         }
     }
 
@@ -72,7 +72,7 @@ class GameEngine {
         if (turnoJugador) {
             habilitarOpciones(turnoJugador);
         } else {
-            habilitarOpciones(!turnoJugador);
+            habilitarOpciones(turnoJugador);
         }
     }
 
@@ -94,7 +94,6 @@ class GameEngine {
         }
 
         protected void onPostExecute(Void nada) {
-            turnoJugador = !turnoJugador;
             TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
             TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
             if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
@@ -106,15 +105,25 @@ class GameEngine {
                         reiniciar((Button) botonPulsado);
                     }
                 });
-            }else{
-                if(!turnoJugador){
-                    int noseque = (int) Math.random()*casillasDisponibles.size();
-                    getTareaAsincrona().execute(noseque);
+            } else {
+                if (!turnoJugador) {
+                    if(casillasDisponibles.size()>0){
+                        int noseque = (int) Math.random() * casillasDisponibles.size();
+                        getTareaAsincrona().execute(noseque);
+                    }
+                    else{
+                        turnoJugador = !turnoJugador;
+                        habilitarOpciones(turnoJugador);
+                    }
+                }else{
+                    if(casillasDisponibles.size()<1){
+                        habilitarOpciones(!turnoJugador);
+                        int noseque = (int) Math.random() * casillasDisponibles.size();
+                        getTareaAsincrona().execute(noseque);
+                    }
                 }
             }
         }
-
-
 
 
         void jugada(Integer botonPulsado) {
@@ -122,12 +131,13 @@ class GameEngine {
             if (turnoJugador) {
                 turnoJugador(botonPulsado);
                 habilitarOpciones(false);
-            }else {
+            } else {
                 if (casillasDisponibles.size() > 0) {
                     turnoIA();
                     habilitarOpciones(true);
                 }
             }
+            turnoJugador = !turnoJugador;
         }
 
         private void desactivarBotones(ArrayList<origenSeleccion> botonesADesactivar) {
@@ -142,7 +152,7 @@ class GameEngine {
         private void habilitarOpciones(boolean habilitarJugador) {
             ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
             ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
-            String simbolo = (habilitarJugador) ? "*":"";
+            String simbolo = (habilitarJugador) ? "*" : "";
             casillasDisponibles.clear();
             for (int tag : casillasPropias) {
                 if (tag % TAM < (TAM - 1)) {
@@ -225,7 +235,7 @@ class GameEngine {
         private void turnoJugador(Integer botonPulsado) {
             desactivarBotones(casillasDisponibles);
             publishProgress(botonPulsado.toString(), "X");
-            matrizBotones[botonPulsado/TAM][botonPulsado%TAM].setClickable(false);
+            matrizBotones[botonPulsado / TAM][botonPulsado % TAM].setClickable(false);
             casillasJugador.add(botonPulsado);
             casillasLibres.remove(botonPulsado);
             try {
@@ -287,7 +297,7 @@ class GameEngine {
         ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
         ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
         casillasDisponibles.clear();
-        String simbolo = (habilitarJugador) ? "*":"";
+        String simbolo = (habilitarJugador) ? "*" : "";
         for (int tag : casillasPropias) {
             if (tag % TAM < (TAM - 1)) {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
@@ -367,36 +377,49 @@ class GameEngine {
     }
 
     private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
-        if (tag > -1 && tag < TAM * TAM) {
-            int nuevoTag = tag + coordenada;
-            if (Math.abs(coordenada) == 1) {
-                if (nuevoTag / TAM == tag / TAM) {
-                    if (casillasLibres.indexOf(nuevoTag) > -1) {
-                        return nuevoTag;
-                    } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                        return busqueda(nuevoTag, coordenada, casillasContrarias);
-                    }else{
-                        return -1;
-                    }
-                }else{
+        int nuevoTag = tag + coordenada;
+        if (Math.abs(coordenada) == 1) {
+            if (nuevoTag / TAM != tag / TAM) {
+                return -1;
+            }
+        } else {
+            if (Math.abs((tag / TAM) - (nuevoTag / TAM)) != 1) {
+                return -1;
+            }
+        }
+        if (casillasLibres.indexOf(Integer.valueOf(nuevoTag)) > -1) {
+            return nuevoTag;
+        } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
+            return busqueda(nuevoTag, coordenada, casillasContrarias);
+        } else {
+            return -1;
+        }
+        /*int nuevoTag = tag + coordenada;
+        if (Math.abs(coordenada) == 1) {
+            if (nuevoTag / TAM == tag / TAM) {
+                if (casillasLibres.indexOf(nuevoTag) > -1) {
+                    return nuevoTag;
+                } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
+                    return busqueda(nuevoTag, coordenada, casillasContrarias);
+                } else {
                     return -1;
                 }
             } else {
-                if (Math.abs((tag / TAM) - (nuevoTag / TAM)) == 1) {
-                    if (casillasLibres.indexOf(Integer.valueOf(nuevoTag)) > -1) {
-                        return nuevoTag;
-                    } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                        return busqueda(nuevoTag, coordenada, casillasContrarias);
-                    }else{
-                        return -1;
-                    }
-                }else{
+                return -1;
+            }
+        } else {
+            if (Math.abs((tag / TAM) - (nuevoTag / TAM)) == 1) {
+                if (casillasLibres.indexOf(Integer.valueOf(nuevoTag)) > -1) {
+                    return nuevoTag;
+                } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
+                    return busqueda(nuevoTag, coordenada, casillasContrarias);
+                } else {
                     return -1;
                 }
+            } else {
+                return -1;
             }
-        }else{
-            return -1;
-        }
+        }*/
     }
 
     private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
