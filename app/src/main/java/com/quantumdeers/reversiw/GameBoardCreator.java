@@ -88,7 +88,7 @@ class GameBoardCreator {
             public void onClick(View botonPulsado) {
                 //gameEngine.jugada((Button) botonPulsado);
                 //gameEngine.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,(Button) botonPulsado);
-                gameEngine.getTareaAsincrona().execute((Button) botonPulsado);
+                gameEngine.getTareaAsincrona().execute((Integer)((Button) botonPulsado).getTag());
                 /*gameEngine = new GameEngine(gameEngine);
                 gameEngine.execute((Button)botonPulsado);*/
 
