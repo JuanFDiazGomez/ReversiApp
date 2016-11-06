@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 class GameEngine {
     private Principal principal;
@@ -26,7 +25,7 @@ class GameEngine {
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
         this.principal = principal;
         this.pantalla = pantalla;
-        GameEngine.TAM = TAM;
+        this.TAM = TAM;
         this.matrizBotones = matrizBotones;
         this.casillasJugador = new ArrayList<>(TAM / 2);
         this.casillasIA = new ArrayList<>(TAM / 2);
@@ -67,8 +66,8 @@ class GameEngine {
         casillasJugador.add(((columna * TAM) + columna));
         casillasLibres.remove((Integer) ((columna * TAM) + columna));
 
-        TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
-        TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
+        TVPuntuacionIA.setText(Integer.toString(casillasIA.size()));
+        TVPuntuacionJugador.setText(Integer.toString(casillasJugador.size()));
 
         if (turnoJugador) {
             habilitarOpciones(turnoJugador);
@@ -77,11 +76,11 @@ class GameEngine {
         }
     }
 
-    tareaAsincrona getTareaAsincrona() {
+    public tareaAsincrona getTareaAsincrona() {
         return new tareaAsincrona();
     }
 
-    private class tareaAsincrona extends AsyncTask<Integer, String, Void> {
+    class tareaAsincrona extends AsyncTask<Integer, String, Void> {
         protected Void doInBackground(Integer... boton) {
             jugada(boton[0]);
             return null;
@@ -109,8 +108,8 @@ class GameEngine {
                 });
             }else{
                 if(!turnoJugador){
-                    int botonIA = (int) (Math.random() * casillasDisponibles.size());
-                    getTareaAsincrona().execute(botonIA);
+                    int noseque = (int) Math.random()*casillasDisponibles.size();
+                    getTareaAsincrona().execute(noseque);
                 }
             }
         }
@@ -143,6 +142,7 @@ class GameEngine {
         private void habilitarOpciones(boolean habilitarJugador) {
             ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
             ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
+            String simbolo = (habilitarJugador) ? "*":"";
             casillasDisponibles.clear();
             for (int tag : casillasPropias) {
                 if (tag % TAM < (TAM - 1)) {
@@ -150,7 +150,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -159,7 +159,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -168,7 +168,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -178,7 +178,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -187,7 +187,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -196,7 +196,7 @@ class GameEngine {
                         int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
                         if (res > -1) {
                             casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
-                            publishProgress(Integer.toString(res), "*");
+                            publishProgress(Integer.toString(res), simbolo);
                             matrizBotones[res / TAM][res % TAM].setClickable(true);
                         }
                     }
@@ -206,7 +206,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
-                        publishProgress(Integer.toString(res), "*");
+                        publishProgress(Integer.toString(res), simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
 
@@ -215,7 +215,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
-                        publishProgress(Integer.toString(res), "*");
+                        publishProgress(Integer.toString(res), simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -228,6 +228,11 @@ class GameEngine {
             matrizBotones[botonPulsado/TAM][botonPulsado%TAM].setClickable(false);
             casillasJugador.add(botonPulsado);
             casillasLibres.remove(botonPulsado);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             voltearCasillas(botonPulsado);
         }
 
@@ -236,7 +241,7 @@ class GameEngine {
             for (int index = 0; index < casillasDisponibles.size(); index++) {
                 origenSeleccion tagAux = casillasDisponibles.get(index);
                 if (tagAux.disponile == tag) {
-                    for (int botonOrigen = tagAux.origen + tagAux.coordenada; botonOrigen != tagAux.disponile; botonOrigen += tagAux.coordenada) {
+                    for (int botonOrigen = tagAux.disponile - tagAux.coordenada; botonOrigen != tagAux.origen; botonOrigen -= tagAux.coordenada) {
                         publishProgress(Integer.toString(botonOrigen), simbolo);
                         if (turnoJugador) {
                             casillasIA.remove(Integer.valueOf(botonOrigen));
@@ -260,25 +265,21 @@ class GameEngine {
             int index = (int) (Math.random() * casillasDisponibles.size());
             int tag = casillasDisponibles.get(index).disponile;
             publishProgress(Integer.toString(tag), "O");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             casillasIA.add(tag);
             casillasLibres.remove((Integer) tag);
             voltearCasillas(tag);
         }
 
         private void reiniciar(Button botonAbandonar) {
-            for (int fila = 0; fila < TAM; fila++) {
-                for (int columna = 0; columna < TAM; columna++) {
-                    matrizBotones[fila][columna].setClickable(true);
-                    matrizBotones[fila][columna].setText("");
-                    TextView puntuacionJugadorTV =
-                            (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-                    puntuacionJugadorTV.setText("0");
-                    TextView puntuacionIATV =
-                            (TextView) pantalla.findViewById(R.id.puntuacionIA);
-                    puntuacionIATV.setText("0");
-                    botonAbandonar.setText(R.string.boton_abandonar);
-                }
-            }
+            casillasJugador.clear();
+            casillasIA.clear();
+            casillasLibres.clear();
+            iniciarJuego();
         }
     }
 
@@ -286,13 +287,14 @@ class GameEngine {
         ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
         ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
         casillasDisponibles.clear();
+        String simbolo = (habilitarJugador) ? "*":"";
         for (int tag : casillasPropias) {
             if (tag % TAM < (TAM - 1)) {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -301,7 +303,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -310,7 +312,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -320,7 +322,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -329,7 +331,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -338,7 +340,7 @@ class GameEngine {
                     int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
                     if (res > -1) {
                         casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
-                        matrizBotones[res / TAM][res % TAM].setText("*");
+                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
                         matrizBotones[res / TAM][res % TAM].setClickable(true);
                     }
                 }
@@ -348,7 +350,7 @@ class GameEngine {
                 int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
                 if (res > -1) {
                     casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
-                    matrizBotones[res / TAM][res % TAM].setText("*");
+                    matrizBotones[res / TAM][res % TAM].setText(simbolo);
                     matrizBotones[res / TAM][res % TAM].setClickable(true);
                 }
 
@@ -357,7 +359,7 @@ class GameEngine {
                 int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
                 if (res > -1) {
                     casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
-                    matrizBotones[res / TAM][res % TAM].setText("*");
+                    matrizBotones[res / TAM][res % TAM].setText(simbolo);
                     matrizBotones[res / TAM][res % TAM].setClickable(true);
                 }
             }
@@ -381,7 +383,7 @@ class GameEngine {
                 }
             } else {
                 if (Math.abs((tag / TAM) - (nuevoTag / TAM)) == 1) {
-                    if (casillasLibres.indexOf(nuevoTag) > -1) {
+                    if (casillasLibres.indexOf(Integer.valueOf(nuevoTag)) > -1) {
                         return nuevoTag;
                     } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
                         return busqueda(nuevoTag, coordenada, casillasContrarias);
@@ -400,6 +402,7 @@ class GameEngine {
     private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
         for (Integer tag : botonesADesactivar) {
             matrizBotones[tag / TAM][tag % TAM].setClickable(false);
+            matrizBotones[tag / TAM][tag % TAM].setText("");
         }
     }
 }
