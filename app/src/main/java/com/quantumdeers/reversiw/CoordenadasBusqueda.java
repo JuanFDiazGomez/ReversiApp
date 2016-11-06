@@ -21,9 +21,8 @@ public class CoordenadasBusqueda {
     public CoordenadasBusqueda(int TAM){
         this.TAM = TAM;
     }
-    public int N(){
-        return -TAM;
-    }
+
+    public int N(){ return -TAM; }
 
     public int S(){
         return TAM;

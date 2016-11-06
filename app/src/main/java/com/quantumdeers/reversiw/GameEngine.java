@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ class GameEngine {
     private TextView TVPuntuacionJugador;
     private TextView TVPuntuacionIA;
     private static int TAM;
+    private boolean jugadorEmpieza;
     private boolean turnoJugador;
     private CoordenadasBusqueda coordenadas;
     private ArrayList<Integer> casillasJugador;
@@ -31,7 +33,7 @@ class GameEngine {
         this.casillasIA = new ArrayList<>(TAM / 2);
         this.casillasLibres = new ArrayList<>(TAM * TAM);
         this.casillasDisponibles = new ArrayList<>();
-        this.turnoJugador = true;
+        this.jugadorEmpieza = true;
         this.coordenadas = new CoordenadasBusqueda(TAM);
         iniciarJuego();
         if (!turnoJugador) {
@@ -40,6 +42,7 @@ class GameEngine {
     }
 
     private void iniciarJuego() {
+        turnoJugador = jugadorEmpieza;
         for (int tag = 0; tag < TAM * TAM; tag++) {
             casillasLibres.add(tag);
         }
@@ -97,8 +100,10 @@ class GameEngine {
             TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
             TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
             if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
+                tostadaResultado();
                 Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
                 botonAbandonar.setText(R.string.textoReiniciar);
+
                 botonAbandonar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View botonPulsado) {
@@ -108,8 +113,8 @@ class GameEngine {
             } else {
                 if (!turnoJugador) {
                     if(casillasDisponibles.size()>0){
-                        int noseque = (int) Math.random() * casillasDisponibles.size();
-                        getTareaAsincrona().execute(noseque);
+                        int tagEleccion = (int) (Math.random() * casillasDisponibles.size());
+                        getTareaAsincrona().execute(tagEleccion);
                     }
                     else{
                         turnoJugador = !turnoJugador;
@@ -118,7 +123,7 @@ class GameEngine {
                 }else{
                     if(casillasDisponibles.size()<1){
                         habilitarOpciones(!turnoJugador);
-                        int noseque = (int) Math.random() * casillasDisponibles.size();
+                        int noseque = (int) (Math.random() * casillasDisponibles.size());
                         getTareaAsincrona().execute(noseque);
                     }
                 }
@@ -394,32 +399,6 @@ class GameEngine {
         } else {
             return -1;
         }
-        /*int nuevoTag = tag + coordenada;
-        if (Math.abs(coordenada) == 1) {
-            if (nuevoTag / TAM == tag / TAM) {
-                if (casillasLibres.indexOf(nuevoTag) > -1) {
-                    return nuevoTag;
-                } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                    return busqueda(nuevoTag, coordenada, casillasContrarias);
-                } else {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        } else {
-            if (Math.abs((tag / TAM) - (nuevoTag / TAM)) == 1) {
-                if (casillasLibres.indexOf(Integer.valueOf(nuevoTag)) > -1) {
-                    return nuevoTag;
-                } else if (casillasContrarias.indexOf(nuevoTag) > -1) {
-                    return busqueda(nuevoTag, coordenada, casillasContrarias);
-                } else {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }*/
     }
 
     private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
@@ -427,5 +406,16 @@ class GameEngine {
             matrizBotones[tag / TAM][tag % TAM].setClickable(false);
             matrizBotones[tag / TAM][tag % TAM].setText("");
         }
+    }
+    private void tostadaResultado() {
+        String strResult = null;
+        if (casillasIA.size() < casillasJugador.size()) {
+            strResult = "****Has ganado****";
+        } else if (casillasIA.size() > casillasJugador.size()) {
+            strResult = "****Has perdido****";
+        }else{
+            strResult = "****Empate****";
+        }
+        Toast.makeText(principal, strResult, Toast.LENGTH_LONG).show();
     }
 }
