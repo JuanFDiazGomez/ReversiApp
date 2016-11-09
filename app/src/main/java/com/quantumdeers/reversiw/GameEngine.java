@@ -27,6 +27,8 @@ class GameEngine {
     private Button botonAyuda;
     private boolean ayudaVisible;
 
+    GameEngine(){}
+
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
         this.principal = principal;
         this.pantalla = pantalla;
@@ -120,7 +122,14 @@ class GameEngine {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            voltearCasillas(boton[0], simbolo);
+            for(String tagBoton : voltearCasillas(boton[0])){
+                publishProgress(tagBoton, simbolo);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
         }
 
@@ -155,28 +164,78 @@ class GameEngine {
                 }
             }
         }
+    }
 
-        private void voltearCasillas(Integer seleccion, String simbolo) {
-            for (int index = 0; index < casillasDisponibles.size(); index++) {
-                OrigenSeleccion os = casillasDisponibles.get(index);
-                if (os.disponile == seleccion) {
-                    for (int bo = os.disponile - os.coordenada; bo != os.origen; bo -= os.coordenada) {
-                        publishProgress(Integer.toString(bo), simbolo);
-                        if (turnoJugadorActual == Turnos.JUGADOR) {
-                            casillasJugador.add(bo);
-                            casillasIA.remove(Integer.valueOf(bo));
-                        } else {
-                            casillasIA.add(bo);
-                            casillasJugador.remove(Integer.valueOf(bo));
-                        }
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+    protected class IA extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            GuardarEstadoJuego();
+            super.onPreExecute();
+            botonAyuda.setClickable(false);
+            desactivarBotones(casillasDisponibles);
+            ayudaVisible = false;
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... boton) {
+            turnoActual++;
+            String simbolo;
+            if(turnoJugadorActual == Turnos.IA){
+                simbolo = "O";
+            }else{
+                simbolo = "X";
+            }
+            jugada(boton[0]);
+            publishProgress(String.valueOf(boton[0]), simbolo);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for(String tagBoton : voltearCasillas(boton[0])){
+                publishProgress(tagBoton, simbolo);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate();
+            int tag = Integer.parseInt(values[0]);
+            int fila = tag / TAM;
+            int columna = tag % TAM;
+            matrizBotones[fila][columna].setText(values[1]);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            restaurarEstado();
+        }
+
+        private void guardarEstadoJuego(){
+            Turnos turnoJugadorActualAux=turnoJugadorActual;
+            int turnoActualAux = turnoActual;
+            ArrayList<Integer> casillasJugadorAux = (ArrayList<Integer>) casillasJugador.clone(); // Casillas en posesion de J1
+            ArrayList<Integer> casillasIAAux = (ArrayList<Integer>) casillasIA.clone(); // Casillas en posesion de J2
+            ArrayList<Integer> casillasLibresAux = (ArrayList<Integer>) casillasLibres.clone(); // Casillas sin ocupar
+            ArrayList<OrigenSeleccion> casillasDisponiblesAux =
+                    (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
+        }
+
+        private void restaurarEstado(){
+            turnoJugadorActual = turnoJugadorActualAux;
+            int turnoActualAux = turnoActual;
+            ArrayList<Integer> casillasJugadorAux = (ArrayList<Integer>) casillasJugador.clone(); // Casillas en posesion de J1
+            ArrayList<Integer> casillasIAAux = (ArrayList<Integer>) casillasIA.clone(); // Casillas en posesion de J2
+            ArrayList<Integer> casillasLibresAux = (ArrayList<Integer>) casillasLibres.clone(); // Casillas sin ocupar
+            ArrayList<OrigenSeleccion> casillasDisponiblesAux =
+                    (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
         }
     }
 
@@ -194,6 +253,26 @@ class GameEngine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<String> voltearCasillas(Integer seleccion) {
+        ArrayList<String> casillasAGirar = new ArrayList<>(10);
+        for (int index = 0; index < casillasDisponibles.size(); index++) {
+            OrigenSeleccion os = casillasDisponibles.get(index);
+            if (os.disponile == seleccion) {
+                for (int bo = os.disponile - os.coordenada; bo != os.origen; bo -= os.coordenada) {
+                    casillasAGirar.add(String.valueOf(bo));
+                    if (turnoJugadorActual == Turnos.JUGADOR) {
+                        casillasJugador.add(bo);
+                        casillasIA.remove(Integer.valueOf(bo));
+                    } else {
+                        casillasIA.add(bo);
+                        casillasJugador.remove(Integer.valueOf(bo));
+                    }
+                }
+            }
+        }
+        return casillasAGirar;
     }
 
     private void habilitarOpciones() {
