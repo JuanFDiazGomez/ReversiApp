@@ -32,6 +32,13 @@ class GameBoardCreator {
         pantalla = (RelativeLayout) LayoutInflater.from(principal).
                 inflate(R.layout.activity_juego, new LinearLayout(principal), false);
         tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
+        Button botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
+        botonAyuda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameEngine.mostrarDisponibles();
+            }
+        });
         modificarTablero();
         return pantalla;
     }
@@ -86,12 +93,7 @@ class GameBoardCreator {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View botonPulsado) {
-                //gameEngine.jugada((Button) botonPulsado);
-                //gameEngine.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,(Button) botonPulsado);
-                gameEngine.getTareaAsincrona().execute((Integer)((Button) botonPulsado).getTag());
-                /*gameEngine = new GameEngine(gameEngine);
-                gameEngine.execute((Button)botonPulsado);*/
-
+                gameEngine.getTareaAsincrona().execute((Integer)(botonPulsado).getTag());
             }
         });
         return boton;
