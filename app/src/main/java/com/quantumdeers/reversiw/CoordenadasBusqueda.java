@@ -1,14 +1,16 @@
 package com.quantumdeers.reversiw;
 
-enum opcionCoordenadas{
-    N,S,W,E,NW,SW,NE,SE
+enum Turnos{
+    JUGADOR, IA
 }
-class origenSeleccion{
+
+
+class OrigenSeleccion {
     public int origen;
     public int disponile;
     public int coordenada;
 
-    public origenSeleccion(int origen, int disponile, int coordenada){
+    public OrigenSeleccion(int origen, int disponile, int coordenada){
         this.origen = origen;
         this.disponile = disponile;
         this.coordenada = coordenada;

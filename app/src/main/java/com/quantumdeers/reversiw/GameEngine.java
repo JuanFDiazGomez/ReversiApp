@@ -10,19 +10,19 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 class GameEngine {
-    private Principal principal;
-    private RelativeLayout pantalla;
-    private Button[][] matrizBotones;
-    private TextView TVPuntuacionJugador;
-    private TextView TVPuntuacionIA;
-    private static int TAM;
-    private boolean jugadorEmpieza;
-    private boolean turnoJugador;
-    private CoordenadasBusqueda coordenadas;
-    private ArrayList<Integer> casillasJugador;
-    private ArrayList<Integer> casillasIA;
-    private ArrayList<Integer> casillasLibres;
-    private ArrayList<origenSeleccion> casillasDisponibles;
+    private Principal principal; // Guardamos en una variable la actividad principal
+    private RelativeLayout pantalla; // Este es el layout principal
+    private Button[][] matrizBotones; // El tablero en si
+    private TextView TVPuntuacionJugador; // TextView donde se guarda la puntuacion del J1
+    private TextView TVPuntuacionIA; // TextView donde se guarda la puntuacion del J2
+    private static int TAM; // Variable que especifica el tamaño del tablero
+    private boolean jugadorEmpieza; // Variable que especifica si el jugador empieza o la IA
+    private Turnos turnoActual; // Indica el turno actual - True si es J1 - False si es J2
+    private CoordenadasBusqueda coordenadas; // Clase que contiene las coordenada de busqueda
+    private ArrayList<Integer> casillasJugador; // Casillas en posesion de J1
+    private ArrayList<Integer> casillasIA; // Casillas en posesion de J2
+    private ArrayList<Integer> casillasLibres; // Casillas sin ocupar
+    private ArrayList<OrigenSeleccion> casillasDisponibles; // Casillas disponibles para su seleccion
 
     GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
         this.principal = principal;
@@ -36,26 +36,34 @@ class GameEngine {
         this.jugadorEmpieza = true;
         this.coordenadas = new CoordenadasBusqueda(TAM);
         iniciarJuego();
-        if (!turnoJugador) {
-            this.getTareaAsincrona().execute((int) (Math.random()*casillasDisponibles.size()));
+        if (turnoActual == Turnos.IA) {
+            this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
         }
     }
 
     private void iniciarJuego() {
-        turnoJugador = jugadorEmpieza;
+        // Definimos de quien es el primer turno
+        turnoActual = (jugadorEmpieza) ? Turnos.JUGADOR : Turnos.IA;
+        // Agregamos todas las casillas a nuestra variable que guarda las libres
         for (int tag = 0; tag < TAM * TAM; tag++) {
             casillasLibres.add(tag);
         }
+        // Nos aseguramos que todas las casillas esten desactivadas
         desactivarBotones(casillasLibres);
+        // Definimos las variables para inicializar el centro del tablero
         int fila = (TAM - 1) / 2;
         int columna = (TAM) / 2;
-
+        // Asignamos los TextView del layout a nuestras variables
         TVPuntuacionIA = (TextView) pantalla.findViewById(R.id.puntuacionIA);
         TVPuntuacionJugador = (TextView) pantalla.findViewById(R.id.puntuacionJugador);
-
+        // Definimos las 4 casillas centrales
         matrizBotones[fila][fila].setText("X");
         casillasJugador.add(((fila * TAM) + fila));
         casillasLibres.remove((Integer) ((fila * TAM) + fila));
+
+        matrizBotones[columna][columna].setText("X");
+        casillasJugador.add(((columna * TAM) + columna));
+        casillasLibres.remove((Integer) ((columna * TAM) + columna));
 
         matrizBotones[fila][columna].setText("O");
         casillasIA.add(((fila * TAM) + columna));
@@ -64,27 +72,32 @@ class GameEngine {
         matrizBotones[columna][fila].setText("O");
         casillasIA.add(((columna * TAM) + fila));
         casillasLibres.remove((Integer) ((columna * TAM) + fila));
-
-        matrizBotones[columna][columna].setText("X");
-        casillasJugador.add(((columna * TAM) + columna));
-        casillasLibres.remove((Integer) ((columna * TAM) + columna));
-
+        // Ponemos la puntuacion iniciar el los TextView de cada jugador
         TVPuntuacionIA.setText(Integer.toString(casillasIA.size()));
         TVPuntuacionJugador.setText(Integer.toString(casillasJugador.size()));
 
-        if (turnoJugador) {
-            habilitarOpciones(turnoJugador);
-        } else {
-            habilitarOpciones(turnoJugador);
-        }
+        // Habilitamos las casillas disponibles para el jugador que tiene el turno inicial
+        habilitarOpciones();
     }
 
-    public tareaAsincrona getTareaAsincrona() {
-        return new tareaAsincrona();
+    // Gracias a este metodo podremos crear la jugada
+    public jugadaAsinkTask getTareaAsincrona() {
+        return new jugadaAsinkTask();
     }
 
-    class tareaAsincrona extends AsyncTask<Integer, String, Void> {
+    /*
+    Esta es la clase que hereda de AsynTask para poder ejecutarse en segundo plano las funciones
+     */
+    class jugadaAsinkTask extends AsyncTask<Integer, String, Void> {
+        // Esto se ejecutara en segundo plano
         protected Void doInBackground(Integer... boton) {
+            if(turnoActual == Turnos.IA){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             jugada(boton[0]);
             return null;
         }
@@ -97,56 +110,29 @@ class GameEngine {
         }
 
         protected void onPostExecute(Void nada) {
-            TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
-            TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
-            if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
+            actualizarPuntuaciones();
+            if (comprobarJuegoFinalizado()) {
                 tostadaResultado();
-                Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
-                botonAbandonar.setText(R.string.textoReiniciar);
-
-                botonAbandonar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View botonPulsado) {
-                        reiniciar((Button) botonPulsado);
-                    }
-                });
             } else {
-                if (!turnoJugador) {
-                    if(casillasDisponibles.size()>0){
-                        int tagEleccion = (int) (Math.random() * casillasDisponibles.size());
-                        getTareaAsincrona().execute(tagEleccion);
-                    }
-                    else{
-                        turnoJugador = !turnoJugador;
-                        habilitarOpciones(turnoJugador);
-                    }
-                }else{
-                    if(casillasDisponibles.size()<1){
-                        habilitarOpciones(!turnoJugador);
-                        int noseque = (int) (Math.random() * casillasDisponibles.size());
-                        getTareaAsincrona().execute(noseque);
-                    }
-                }
-            }
-        }
-
-
-        void jugada(Integer botonPulsado) {
-
-            if (turnoJugador) {
-                turnoJugador(botonPulsado);
-                habilitarOpciones(false);
-            } else {
+                prepararSiguienteTurno();
+                /*
+                Si al terminar de preparar el siguiente turno ninguno de los dos puede mover
+                el juego habrá finalizado
+                 */
                 if (casillasDisponibles.size() > 0) {
-                    turnoIA();
-                    habilitarOpciones(true);
+                    if (turnoActual == Turnos.JUGADOR) {
+                        mostrarDisponibles();
+                    } else {
+                        getTareaAsincrona().execute(seleccionIA());
+                    }
+                } else {
+                    tostadaResultado();
                 }
             }
-            turnoJugador = !turnoJugador;
         }
 
-        private void desactivarBotones(ArrayList<origenSeleccion> botonesADesactivar) {
-            for (origenSeleccion tag : botonesADesactivar) {
+        private void desactivarBotones(ArrayList<OrigenSeleccion> botonesADesactivar) {
+            for (OrigenSeleccion tag : botonesADesactivar) {
                 matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setClickable(false);
                 if (casillasLibres.indexOf(tag.disponile) > -1) {
                     publishProgress(Integer.toString(tag.disponile), "");
@@ -154,119 +140,44 @@ class GameEngine {
             }
         }
 
-        private void habilitarOpciones(boolean habilitarJugador) {
-            ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
-            ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
-            String simbolo = (habilitarJugador) ? "*" : "";
-            casillasDisponibles.clear();
-            for (int tag : casillasPropias) {
-                if (tag % TAM < (TAM - 1)) {
-                    if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
-                        int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-
-                    if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
-                        int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-
-                    if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
-                        int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-                }
-                if (tag % TAM != 0) {
-                    if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
-                        int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-
-                    if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
-                        int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-
-                    if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
-                        int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
-                        if (res > -1) {
-                            casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
-                            publishProgress(Integer.toString(res), simbolo);
-                            matrizBotones[res / TAM][res % TAM].setClickable(true);
-                        }
-                    }
-                }
-
-                if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
-                    int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
-                        publishProgress(Integer.toString(res), simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
-
-                }
-                if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
-                    int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
-                        publishProgress(Integer.toString(res), simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
-                }
+        private void jugada(Integer botonPulsado) {
+            String simbolo;
+            ArrayList<Integer> casillasPropias;
+            if (turnoActual == Turnos.JUGADOR) {
+                simbolo = "X";
+                casillasPropias = casillasJugador;
+            } else {
+                simbolo = "O";
+                casillasPropias = casillasIA;
             }
-        }
-
-        private void turnoJugador(Integer botonPulsado) {
             desactivarBotones(casillasDisponibles);
-            publishProgress(botonPulsado.toString(), "X");
+            publishProgress(botonPulsado.toString(), simbolo);
             matrizBotones[botonPulsado / TAM][botonPulsado % TAM].setClickable(false);
-            casillasJugador.add(botonPulsado);
+            casillasPropias.add(botonPulsado);
             casillasLibres.remove(botonPulsado);
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            voltearCasillas(botonPulsado);
+            voltearCasillas(botonPulsado, simbolo);
         }
 
-        private void voltearCasillas(Integer tag) {
-            String simbolo = (String) matrizBotones[tag / TAM][tag % TAM].getText();
+        private void voltearCasillas(Integer seleccion, String simbolo) {
             for (int index = 0; index < casillasDisponibles.size(); index++) {
-                origenSeleccion tagAux = casillasDisponibles.get(index);
-                if (tagAux.disponile == tag) {
-                    for (int botonOrigen = tagAux.disponile - tagAux.coordenada; botonOrigen != tagAux.origen; botonOrigen -= tagAux.coordenada) {
-                        publishProgress(Integer.toString(botonOrigen), simbolo);
-                        if (turnoJugador) {
-                            casillasIA.remove(Integer.valueOf(botonOrigen));
-                            casillasJugador.add(botonOrigen);
+                OrigenSeleccion os = casillasDisponibles.get(index);
+                if (os.disponile == seleccion) {
+                    for (int bo = os.disponile - os.coordenada; bo != os.origen; bo -= os.coordenada) {
+                        publishProgress(Integer.toString(bo), simbolo);
+                        if (turnoActual == Turnos.JUGADOR) {
+                            casillasJugador.add(bo);
+                            casillasIA.remove(Integer.valueOf(bo));
                         } else {
-                            casillasIA.add(botonOrigen);
-                            casillasJugador.remove(Integer.valueOf(botonOrigen));
+                            casillasIA.add(bo);
+                            casillasJugador.remove(Integer.valueOf(bo));
                         }
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -281,103 +192,68 @@ class GameEngine {
             int tag = casillasDisponibles.get(index).disponile;
             publishProgress(Integer.toString(tag), "O");
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             casillasIA.add(tag);
             casillasLibres.remove((Integer) tag);
-            voltearCasillas(tag);
-        }
-
-        private void reiniciar(Button botonAbandonar) {
-            casillasJugador.clear();
-            casillasIA.clear();
-            casillasLibres.clear();
-            iniciarJuego();
+            voltearCasillas(tag, "0");
         }
     }
 
-    private void habilitarOpciones(boolean habilitarJugador) {
-        ArrayList<Integer> casillasContrarias = (habilitarJugador) ? casillasIA : casillasJugador;
-        ArrayList<Integer> casillasPropias = (habilitarJugador) ? casillasJugador : casillasIA;
+    private void habilitarOpciones() {
+        ArrayList<Integer> casillasContrarias;
+        ArrayList<Integer> casillasPropias;
+        String simbolo = "";
+        if (turnoActual == Turnos.JUGADOR) {
+            casillasPropias = casillasJugador;
+            casillasContrarias = casillasIA;
+            simbolo = "*";
+        } else {
+            casillasPropias = casillasIA;
+            casillasContrarias = casillasJugador;
+        }
+
         casillasDisponibles.clear();
-        String simbolo = (habilitarJugador) ? "*" : "";
         for (int tag : casillasPropias) {
             if (tag % TAM < (TAM - 1)) {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
-                    int res = busqueda(tag + coordenadas.E(), coordenadas.E(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.E()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.E(), simbolo, casillasContrarias);
                 }
-
                 if (casillasContrarias.indexOf(tag + coordenadas.NE()) > -1) {
-                    int res = busqueda(tag + coordenadas.NE(), coordenadas.NE(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NE()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.NE(), simbolo, casillasContrarias);
                 }
-
                 if (casillasContrarias.indexOf(tag + coordenadas.SE()) > -1) {
-                    int res = busqueda(tag + coordenadas.SE(), coordenadas.SE(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SE()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.SE(), simbolo, casillasContrarias);
                 }
             }
             if (tag % TAM != 0) {
                 if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
-                    int res = busqueda(tag + coordenadas.W(), coordenadas.W(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.W()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.W(), simbolo, casillasContrarias);
                 }
-
                 if (casillasContrarias.indexOf(tag + coordenadas.NW()) > -1) {
-                    int res = busqueda(tag + coordenadas.NW(), coordenadas.NW(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.NW()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.NW(), simbolo, casillasContrarias);
                 }
-
                 if (casillasContrarias.indexOf(tag + coordenadas.SW()) > -1) {
-                    int res = busqueda(tag + coordenadas.SW(), coordenadas.SW(), casillasContrarias);
-                    if (res > -1) {
-                        casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.SW()));
-                        matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                        matrizBotones[res / TAM][res % TAM].setClickable(true);
-                    }
+                    agregarDisponibles(tag, coordenadas.SW(), simbolo, casillasContrarias);
                 }
             }
-
             if (casillasContrarias.indexOf(tag + coordenadas.N()) > -1) {
-                int res = busqueda(tag + coordenadas.N(), coordenadas.N(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.N()));
-                    matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                    matrizBotones[res / TAM][res % TAM].setClickable(true);
-                }
-
+                agregarDisponibles(tag, coordenadas.N(), simbolo, casillasContrarias);
             }
             if (casillasContrarias.indexOf(tag + coordenadas.S()) > -1) {
-                int res = busqueda(tag + coordenadas.S(), coordenadas.S(), casillasContrarias);
-                if (res > -1) {
-                    casillasDisponibles.add(new origenSeleccion(tag, res, coordenadas.S()));
-                    matrizBotones[res / TAM][res % TAM].setText(simbolo);
-                    matrizBotones[res / TAM][res % TAM].setClickable(true);
-                }
+                agregarDisponibles(tag, coordenadas.S(), simbolo, casillasContrarias);
             }
+        }
+    }
+
+    public void agregarDisponibles(int origen, int coordenada, String simbolo, ArrayList<Integer> casillasContrarias) {
+        int disponible = busqueda(origen + coordenada, coordenada, casillasContrarias);
+        if (disponible > -1) {
+            casillasDisponibles.add(new OrigenSeleccion(origen, disponible, coordenada));
+            matrizBotones[disponible / TAM][disponible % TAM].setText(simbolo);
+            matrizBotones[disponible / TAM][disponible % TAM].setClickable(true);
         }
     }
 
@@ -401,19 +277,68 @@ class GameEngine {
         }
     }
 
+    private int seleccionIA(){
+        int index = (int) (Math.random() * casillasDisponibles.size());
+        return casillasDisponibles.get(index).disponile;
+    }
+
     private void desactivarBotones(ArrayList<Integer> botonesADesactivar) {
         for (Integer tag : botonesADesactivar) {
             matrizBotones[tag / TAM][tag % TAM].setClickable(false);
             matrizBotones[tag / TAM][tag % TAM].setText("");
         }
     }
+
+    private void actualizarPuntuaciones() {
+        TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
+        TVPuntuacionJugador.setText(String.valueOf(casillasJugador.size()));
+    }
+
+    private boolean comprobarJuegoFinalizado() {
+        if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
+            Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
+            botonAbandonar.setText(R.string.textoReiniciar);
+            botonAbandonar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View botonPulsado) {
+                    reiniciar((Button) botonPulsado);
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void prepararSiguienteTurno() {
+        int vueltas = 0;
+        do {
+            turnoActual = (turnoActual == Turnos.JUGADOR) ? Turnos.IA : Turnos.JUGADOR;
+            habilitarOpciones();
+            vueltas++;
+        } while (casillasDisponibles.size() < 1 && vueltas != 2);
+    }
+
+    private void mostrarDisponibles() {
+        for (OrigenSeleccion disponibles : casillasDisponibles) {
+            matrizBotones[disponibles.disponile / TAM][disponibles.disponile % TAM].setText("*");
+        }
+    }
+
+    private void reiniciar(Button botonAbandonar) {
+        casillasJugador.clear();
+        casillasIA.clear();
+        casillasLibres.clear();
+        iniciarJuego();
+    }
+
     private void tostadaResultado() {
         String strResult = null;
         if (casillasIA.size() < casillasJugador.size()) {
             strResult = "****Has ganado****";
         } else if (casillasIA.size() > casillasJugador.size()) {
             strResult = "****Has perdido****";
-        }else{
+        } else {
             strResult = "****Empate****";
         }
         Toast.makeText(principal, strResult, Toast.LENGTH_LONG).show();
