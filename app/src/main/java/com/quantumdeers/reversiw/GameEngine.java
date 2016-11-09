@@ -323,6 +323,7 @@ class GameEngine {
         casillasIA.clear();
         casillasLibres.clear();
         botonAyuda.setClickable(Boolean.TRUE);
+        ayudaVisible = Boolean.FALSE;
         iniciarJuego();
     }
 

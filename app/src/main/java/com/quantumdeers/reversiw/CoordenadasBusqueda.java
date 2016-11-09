@@ -6,51 +6,51 @@ enum Turnos{
 
 
 class OrigenSeleccion {
-    public int origen;
-    public int disponile;
-    public int coordenada;
+    int origen;
+    int disponile;
+    int coordenada;
 
-    public OrigenSeleccion(int origen, int disponile, int coordenada){
+    OrigenSeleccion(int origen, int disponile, int coordenada){
         this.origen = origen;
         this.disponile = disponile;
         this.coordenada = coordenada;
     }
 }
 
-public class CoordenadasBusqueda {
+class CoordenadasBusqueda {
     private int TAM;
 
-    public CoordenadasBusqueda(int TAM){
+    CoordenadasBusqueda(int TAM){
         this.TAM = TAM;
     }
 
-    public int N(){ return -TAM; }
+    int N(){ return -TAM; }
 
-    public int S(){
+    int S(){
         return TAM;
     }
 
-    public int W(){
+    int W(){
         return -1;
     }
 
-    public int E(){
+    int E(){
         return 1;
     }
 
-    public int NW(){
+    int NW(){
         return N()+W();
     }
 
-    public int NE(){
+    int NE(){
         return N()+E();
     }
 
-    public int SW(){
+    int SW(){
         return S()+W();
     }
 
-    public int SE(){
+    int SE(){
         return S()+E();
     }
 }
