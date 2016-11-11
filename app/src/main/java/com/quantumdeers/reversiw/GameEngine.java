@@ -26,6 +26,7 @@ class GameEngine {
 	private ArrayList<OrigenSeleccion> casillasDisponibles; // Casillas disponibles para su seleccion
 	private Button botonAyuda;
 	private boolean ayudaVisible;
+    private IA IAEngine;
 
 	GameEngine() {
 	}
@@ -43,6 +44,7 @@ class GameEngine {
 		this.coordenadas = new CoordenadasBusqueda(TAM);
 		this.ayudaVisible = false;
 		this.botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
+        this.IAEngine = new IA(6);
 		iniciarJuego();
 		if (turnoJugadorActual == Turnos.IA) {
 			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
@@ -90,6 +92,7 @@ class GameEngine {
 
 		// Habilitamos las casillas disponibles para el jugador que tiene el turno inicial
 		habilitarOpciones();
+        //IAEngine.jugada(12);
 	}
 
 	// Gracias a este metodo podremos crear la jugada
@@ -162,79 +165,7 @@ class GameEngine {
 		}
 	}
 
-	protected class IA {
-		private int profundidadMax;
-		private int profundidadActual;
-		Turnos turnoJugadorActualAux;
-		int turnoActualAux;
-		ArrayList<Integer> casillasJugadorAux;
-		ArrayList<Integer> casillasIAAux;
-		ArrayList<Integer> casillasLibresAux;
-		ArrayList<OrigenSeleccion> casillasDisponiblesAux;
-		ArrayList<Integer>[][] matrizDeEstados;
-		ArrayList<OrigenSeleccion>[] arrayDeDisponibles;
-
-		protected IA(int profundidadMax) {
-			this.profundidadMax = profundidadMax;
-			this.profundidadActual = 0;
-			//this.casillasJugadorAux = (ArrayList<Integer>) casillasJugador.clone(); // Casillas en posesion de J1
-			//this.casillasIAAux = (ArrayList<Integer>) casillasIA.clone(); // Casillas en posesion de J2
-			//this.casillasLibresAux = (ArrayList<Integer>) casillasLibres.clone(); // Casillas sin ocupar
-			//this.casillasDisponiblesAux = (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
-			this.turnoActualAux = turnoActual;
-			this.matrizDeEstados = new ArrayList[profundidadMax][3];
-			this.arrayDeDisponibles = new ArrayList[profundidadMax];
-		}
-
-		private int mejorOpcion() {
-			realizarJugadas();
-			restaurarEstadoJuego();
-			return 0;
-		}
-
-		private void realizarJugadas() {
-			salvarEstados();
-			for (int index = 0; index < arrayDeDisponibles[0].size(); index++) {
-				turnoActual++;
-				int casilla = casillasDisponibles.get(index).disponile;
-				jugadas(casilla);
-				restaurarEstadoJuego();
-				profundidadActual=0;
-			}
-		}
-
-		private void jugadas(int casilla) {
-			int profundidadAux=++profundidadActual;
-			jugada(casilla);
-			if(profundidadActual < profundidadMax){
-				salvarEstados();
-				for(int)
-				jugadas();
-			}
-			profundidadActual = profundidadAux;
-
-		}
-
-		private void salvarEstados(){
-			matrizDeEstados[profundidadActual][0] = (ArrayList<Integer>) casillasLibres.clone();
-			matrizDeEstados[profundidadActual][1] = (ArrayList<Integer>) casillasJugador.clone();
-			matrizDeEstados[profundidadActual][2] = (ArrayList<Integer>) casillasIA.clone();
-			arrayDeDisponibles[profundidadActual] = (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
-		}
-		private void restaurarEstadoJuego () {
-			turnoJugadorActual = turnoJugadorActualAux;
-			turnoActual = turnoActualAux;
-			casillasLibres = matrizDeEstados[0][0];
-			casillasJugador = matrizDeEstados[0][1];
-			casillasIA = matrizDeEstados[0][2];
-			casillasDisponibles = arrayDeDisponibles[0];
-		}
-
-	}
-
-
-
-	private void jugada(Integer botonPulsado) {
+	protected void jugada(Integer botonPulsado) {
 		ArrayList<Integer> casillasPropias;
 		if (turnoJugadorActual == Turnos.JUGADOR) {
 			casillasPropias = casillasJugador;
@@ -250,7 +181,7 @@ class GameEngine {
 		}
 	}
 
-	private ArrayList<String> voltearCasillas(Integer seleccion) {
+	protected ArrayList<String> voltearCasillas(Integer seleccion) {
 		ArrayList<String> casillasAGirar = new ArrayList<>(10);
 		for (int index = 0; index < casillasDisponibles.size(); index++) {
 			OrigenSeleccion os = casillasDisponibles.get(index);
@@ -270,7 +201,7 @@ class GameEngine {
 		return casillasAGirar;
 	}
 
-	private void habilitarOpciones() {
+	protected void habilitarOpciones() {
 		ArrayList<Integer> casillasContrarias;
 		ArrayList<Integer> casillasPropias;
 		if (turnoJugadorActual == Turnos.JUGADOR) {
@@ -314,7 +245,7 @@ class GameEngine {
 		}
 	}
 
-	private void agregarDisponibles(int origen, int coordenada, ArrayList<Integer> casillasContrarias) {
+	protected void agregarDisponibles(int origen, int coordenada, ArrayList<Integer> casillasContrarias) {
 		int disponible = busqueda(origen + coordenada, coordenada, casillasContrarias);
 		if (disponible > -1) {
 			casillasDisponibles.add(new OrigenSeleccion(origen, disponible, coordenada));
@@ -322,7 +253,7 @@ class GameEngine {
 		}
 	}
 
-	private int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
+	protected int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
 		int nuevoTag = tag + coordenada;
 		if (Math.abs(coordenada) == 1) {
 			if (nuevoTag / TAM != tag / TAM) {
@@ -347,7 +278,7 @@ class GameEngine {
 		return casillasDisponibles.get(index).disponile;
 	}
 
-	private void desactivarBotones(ArrayList<OrigenSeleccion> botonesADesactivar) {
+	protected void desactivarBotones(ArrayList<OrigenSeleccion> botonesADesactivar) {
 		for (OrigenSeleccion tag : botonesADesactivar) {
 			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setClickable(false);
 			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setText("");
