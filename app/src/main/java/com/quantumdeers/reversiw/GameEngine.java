@@ -18,9 +18,7 @@ class GameEngine extends BasicGameEngine{
 	private Button botonAyuda;
 	private boolean ayudaVisible;
 	private int turnoActual;
-
-	GameEngine() {
-	}
+	private IAEngine IA;
 
 	GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
 		this.principal = principal;
@@ -39,6 +37,7 @@ class GameEngine extends BasicGameEngine{
 		if (turnoJugadorActual == Turnos.IA) {
 			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
 		}
+		this.IA = new IAEngine(6);
 	}
 
 	private void iniciarJuego() {
