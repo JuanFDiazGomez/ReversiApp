@@ -24,6 +24,7 @@ public class IAEngine extends BasicGameEngine {
     }
 
     private int RecursivabuscarJugada(ArrayList<OrigenSeleccion> casillasDisponibles, ArrayList<Integer>... estados){
+        establecerEstadoInicial(0)
         salvarEstados(casillasDisponibles, estados[0], estados[1], estados[2]);
         RecursivabuscarJugada(-1, casillasDisponibles, estados[0], estados[1], estados[2]);
         // despues de realizar la busquedad tendremos el tag con la mayor puntuacion
@@ -45,11 +46,11 @@ public class IAEngine extends BasicGameEngine {
 
 
 
-    private void salvarEstados(ArrayList<OrigenSeleccion> casillasDisponibles, ArrayList<Integer>... estados) {
-        matrizDeEstados[profundidadActual][0] = (ArrayList<Integer>) estados[0].clone();
-        matrizDeEstados[profundidadActual][1] = (ArrayList<Integer>) estados[1].clone();
-        matrizDeEstados[profundidadActual][2] = (ArrayList<Integer>) estados[2].clone();
-        arrayDeDisponibles[0] = (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
+    private void salvarEstados() {
+        matrizDeEstados[profundidadActual][0] = (ArrayList<Integer>) casillasLibres.clone();
+        matrizDeEstados[profundidadActual][1] = (ArrayList<Integer>) casillasJugador.clone();
+        matrizDeEstados[profundidadActual][2] = (ArrayList<Integer>) casillasIA.clone();
+        arrayDeDisponibles[profundidadActual] = (ArrayList<OrigenSeleccion>) casillasDisponibles.clone();
     }
 }
 
