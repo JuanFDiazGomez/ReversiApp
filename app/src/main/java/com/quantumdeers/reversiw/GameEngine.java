@@ -21,23 +21,21 @@ class GameEngine extends BasicGameEngine{
 	private IAEngine IA;
 
 	GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
+		super(TAM,matrizBotones);
 		this.principal = principal;
 		this.pantalla = pantalla;
-		this.TAM = TAM;
-		this.matrizBotones = matrizBotones;
 		this.casillasJugador = new ArrayList<>(TAM / 2);
 		this.casillasIA = new ArrayList<>(TAM / 2);
 		this.casillasLibres = new ArrayList<>(TAM * TAM);
 		this.casillasDisponibles = new ArrayList<>();
 		this.jugadorEmpieza = true;
-		this.coordenadas = new CoordenadasBusqueda(TAM);
 		this.ayudaVisible = false;
 		this.botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
 		iniciarJuego();
 		if (turnoJugadorActual == Turnos.IA) {
 			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
 		}
-		this.IA = new IAEngine(6);
+		this.IA = new IAEngine(2, matrizBotones);
 	}
 
 	private void iniciarJuego() {
@@ -145,7 +143,11 @@ class GameEngine extends BasicGameEngine{
 				if (casillasDisponibles.size() > 0) {
 					botonAyuda.setClickable(Boolean.TRUE);
 					if (turnoJugadorActual == Turnos.IA) {
-						getTareaAsincrona().execute(seleccionIA());
+						getTareaAsincrona().execute(IA.RecursivabuscarJugada(
+								(ArrayList<OrigenSeleccion>) casillasDisponibles.clone(),
+								(ArrayList<Integer>) casillasLibres.clone(),
+								(ArrayList<Integer>)casillasJugador.clone(),
+								(ArrayList<Integer>) casillasIA.clone()));
 					}
 				} else {
 					tostadaResultado();

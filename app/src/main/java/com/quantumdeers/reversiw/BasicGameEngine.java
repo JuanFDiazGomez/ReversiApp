@@ -19,7 +19,12 @@ public abstract class BasicGameEngine {
     protected ArrayList<OrigenSeleccion> casillasDisponibles; // Casillas disponibles para su seleccion
     protected Turnos turnoJugadorActual; // Indica el turno actual - True si es J1 - False si es J2
 
+    public BasicGameEngine(int TAM, Button[][] matrizBotones){
+        this.TAM = TAM;
+        this.matrizBotones = matrizBotones;
+        this.coordenadas = new CoordenadasBusqueda(this.TAM);
 
+    }
 
     protected void jugada(Integer botonPulsado) {
         ArrayList<Integer> casillasPropias;
