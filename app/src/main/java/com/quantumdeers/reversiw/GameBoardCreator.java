@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 
 class GameBoardCreator {
     private Principal principal;
-    private RelativeLayout pantalla;
+    private LinearLayout pantalla;
     private LinearLayout tablero;
     private final static int TAM = 10;
     private Button[][] matrizBotones;
@@ -21,13 +21,13 @@ class GameBoardCreator {
         this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal);
     }
 
-    RelativeLayout getPantalla() {
+    LinearLayout getPantalla() {
         return pantalla;
 
     }
 
-    private RelativeLayout crearPantalla() {
-        pantalla = (RelativeLayout) LayoutInflater.from(principal).
+    private LinearLayout crearPantalla() {
+        pantalla = (LinearLayout) LayoutInflater.from(principal).
                 inflate(R.layout.activity_juego, new LinearLayout(principal), false);
         tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
         Button botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);

@@ -3,6 +3,7 @@ package com.quantumdeers.reversiw;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 class GameEngine extends BasicGameEngine{
 	private Principal principal; // Guardamos en una variable la actividad principal
-	private RelativeLayout pantalla; // Este es el layout principal
+	private LinearLayout pantalla; // Este es el layout principal
 	private TextView TVPuntuacionJugador; // TextView donde se guarda la puntuacion del J1
 	private TextView TVPuntuacionIA; // TextView donde se guarda la puntuacion del J2
 	private boolean jugadorEmpieza; // Variable que especifica si el jugador empieza o la IA
@@ -20,7 +21,7 @@ class GameEngine extends BasicGameEngine{
 	private int turnoActual;
 	private IAEngine IA;
 
-	GameEngine(RelativeLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
+	GameEngine(LinearLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
 		super(TAM,matrizBotones);
 		this.principal = principal;
 		this.pantalla = pantalla;
@@ -143,11 +144,12 @@ class GameEngine extends BasicGameEngine{
 				if (casillasDisponibles.size() > 0) {
 					botonAyuda.setClickable(Boolean.TRUE);
 					if (turnoJugadorActual == Turnos.IA) {
-						getTareaAsincrona().execute(IA.RecursivabuscarJugada(
+						/*getTareaAsincrona().execute(IA.RecursivabuscarJugada(
 								(ArrayList<OrigenSeleccion>) casillasDisponibles.clone(),
 								(ArrayList<Integer>) casillasLibres.clone(),
 								(ArrayList<Integer>)casillasJugador.clone(),
-								(ArrayList<Integer>) casillasIA.clone()));
+								(ArrayList<Integer>) casillasIA.clone()));*/
+						getTareaAsincrona().execute(seleccionIA());
 					}
 				} else {
 					tostadaResultado();

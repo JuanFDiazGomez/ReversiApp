@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_juego"
     android:layout_width="match_parent"
@@ -9,87 +9,80 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.quantumdeers.reversiw.Juego"
-    android:background="@color/fondo_principal">
+    android:background="@color/fondo_principal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:text="@string/logoImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView4"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+        <TextView
+            android:text="@string/valor_puntuacion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/puntuacionJugador"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+        <Button
+            android:text="@string/boton_ayuda"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/botonAyuda"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:text="@string/valor_puntuacion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/puntuacionIA"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+        <TextView
+            android:text="@string/logoImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView6"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3.5"
-            android:layout_marginBottom="5dp">
-
-            <TextView
-                android:text="@string/logoImg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/textView4"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:gravity="center" />
-
-            <TextView
-                android:text="@string/valor_puntuacion"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/puntuacionJugador"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:gravity="center" />
-
-            <Button
-                android:text="@string/boton_ayuda"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/botonAyuda"
-                android:layout_weight="0.8" />
-
-            <TextView
-                android:text="@string/valor_puntuacion"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/puntuacionIA"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:gravity="center" />
-
-            <TextView
-                android:text="@string/logoImg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/textView6"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_tablero"
-            android:id="@+id/contenedor_tablero"
-            android:padding="2dp"
-            android:layout_weight="1">
-
-        </LinearLayout>
-
-        <Button
-            android:text="@string/boton_abandonar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/botonAbandonar"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="18sp"
-            android:layout_weight="3.5"
-            android:layout_marginTop="6dp" />
+        android:background="@color/color_tablero"
+        android:id="@+id/contenedor_tablero"
+        android:padding="2dp"
+        android:layout_weight="0.3">
 
     </LinearLayout>
 
-</RelativeLayout>
+    <Button
+        android:text="@string/boton_abandonar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/botonAbandonar"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="18sp"
+        android:layout_weight="1"
+        android:layout_marginTop="6dp" />
+
+</LinearLayout>
