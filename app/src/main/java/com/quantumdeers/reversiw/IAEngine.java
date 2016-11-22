@@ -56,6 +56,7 @@ public class IAEngine extends BasicGameEngine {
 
     private void juego(Integer juego){
         jugada(juego);
+        // Preparar el siguiente turno solamente por la mejor jugada
         prepararSiguienteTurno();
     }
 
