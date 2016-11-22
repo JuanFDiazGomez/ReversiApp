@@ -35,7 +35,7 @@ class GameEngine extends BasicGameEngine{
 		if (turnoJugadorActual == Turnos.IA) {
 			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
 		}
-		this.IA = new IAEngine(2, matrizBotones);
+		this.IA = new IAEngine(1, matrizBotones);
 	}
 
 	private void iniciarJuego() {

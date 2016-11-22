@@ -14,80 +14,43 @@ public class IAEngine extends BasicGameEngine {
     private int profundidadActual;
     private ArrayList<Integer>[][] matrizDeEstados;
     private ArrayList<OrigenSeleccion>[] arrayDeDisponibles;
-    private int[][] puntuacionesFinal;
+    private int[] puntuacionesFinal;
 
 
 
     protected IAEngine(int profundidadMax, Button[][] matrizBotones) {
         super(TAM, matrizBotones);
         this.profundidadMax = profundidadMax;
-        this.profundidadActual = -1;
+        this.profundidadActual = 0;
         this.matrizDeEstados = new ArrayList[profundidadMax][3];
         this.arrayDeDisponibles = new ArrayList[profundidadMax];
         this.turnoJugadorActual = Turnos.IA;
+        this.puntuacionesFinal = new int[2];
     }
 
     public int RecursivabuscarJugada(ArrayList<OrigenSeleccion> casillasDisponibles, ArrayList<Integer>... estados){
         inicializarIA();
-        puntuacionesFinal = new int[casillasDisponibles.size()][3];
         establecerEstadoInicial(casillasDisponibles, estados);
-        //salvarEstados(casillasDisponibles, estados[0], estados[1], estados[2]);
         RecursividadBuscarJugada();
-        // despues de realizar la busquedad tendremos el tag con la mayor puntuacion
-        // El tag con mayor puntuacion esta en en el index 0 del array puntuacionesFinal
-        int seleccion = puntuacionesFinal[0][0];
-        int []caminos = new int[casillasDisponibles.size()];
-        for(int i = 0; i < caminos.length ; i++){
-            caminos[i] = i;
-        }
-        for(int loquesea = 0; loquesea < puntuacionesFinal.length-1; loquesea++){
-            if(puntuacionesFinal[loquesea][2] < puntuacionesFinal[loquesea+1][2]){
-                seleccion=puntuacionesFinal[loquesea+1][0];
-            }
-        }
-        return arrayDeDisponibles[0].get(seleccion).disponile;
+        return arrayDeDisponibles[0].get(puntuacionesFinal[0]).disponile;
     }
 
     private void inicializarIA(){
-        profundidadActual = -1;
+        profundidadActual = 0;
+        puntuacionesFinal[0] = -1;
+        puntuacionesFinal[1] = -TAM*TAM;
     }
-    /*private void RecursivabuscarJugada(int camino){
-        profundidadActual++;
-        salvarEstados();
-        for(int i = 0; i < this.casillasDisponibles.size(); i++){
-            if(profundidadActual == 0){camino = i;}
-            juego(casillasDisponibles.get(i).disponile);
-            if(profundidadActual < profundidadMax-1){
-                RecursivabuscarJugada(camino);
-                profundidadActual--;
-            }else{
-                puntuacionesFinal[camino][0]=camino;
-                puntuacionesFinal[camino][1]=casillasJugador.size();
-                puntuacionesFinal[camino][2]=casillasIA.size();
 
-            }
-        }
-        // Hacemos un bucle por cada uno de las casillas disponibles
-            // hacemos la jugada en esas casillas disponibles
-            //Comprobamos que no estemos en la profundidad
-            // una vez realizada las jugadas volvemos a llamar la funcion que continue
-            // aumentando la profundidad en 1
-        // Tras aumentar la profundidad, cuando vaya hacia atras tambien la reduciremos
-    }*/
     private void RecursividadBuscarJugada(){
         for(int i = 0; i < casillasDisponibles.size(); i++){
             salvarEstados();
-            profundidadActual = 0;
-            restaurarEstado();
-            jugada(casillasDisponibles.get(i).disponile);
-            profundidadActual = 1;
-            salvarEstados();
-            for(int j = 0; j < casillasDisponibles.size(); j++){
-                restaurarEstado();
-                jugada(casillasDisponibles.get(i).disponile);
-                salvarEstados();
-
+            profundidadActual++;
+            juego(casillasDisponibles.get(i).disponile);
+            if(casillasIA.size()-casillasJugador.size() > puntuacionesFinal[1]){
+                puntuacionesFinal[0] = i;
             }
+            profundidadActual--;
+            restaurarEstado();
         }
     }
 
@@ -115,6 +78,25 @@ public class IAEngine extends BasicGameEngine {
         this.casillasJugador = estados[1];
         this.casillasIA = estados[2];
         this.casillasDisponibles = casillasDisponibles;
+    }
+
+    private void limpiarEstados(){
+        for(ArrayList<Integer>[] estado : matrizDeEstados){
+            estado[0].clear();
+            estado[1].clear();
+            estado[2].clear();
+        }
+        for(int i = 0; i < arrayDeDisponibles.length; i++){
+            arrayDeDisponibles[i].clone();
+        }
+    }
+
+    @Override
+    protected void agregarDisponibles(int origen, int coordenada, ArrayList<Integer> casillasContrarias) {
+        int disponible = busqueda(origen + coordenada, coordenada, casillasContrarias);
+        if (disponible > -1) {
+            casillasDisponibles.add(new OrigenSeleccion(origen, disponible, coordenada));
+        }
     }
 }
 
