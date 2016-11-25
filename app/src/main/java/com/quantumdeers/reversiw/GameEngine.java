@@ -61,18 +61,22 @@ class GameEngine extends BasicGameEngine{
 		matrizBotones[fila][fila].setText("X");
 		casillasJugador.add(((fila * TAM) + fila));
 		casillasLibres.remove((Integer) ((fila * TAM) + fila));
+		casillasLibresDisponibles--;
 
 		matrizBotones[columna][columna].setText("X");
 		casillasJugador.add(((columna * TAM) + columna));
 		casillasLibres.remove((Integer) ((columna * TAM) + columna));
+		casillasLibresDisponibles--;
 
 		matrizBotones[fila][columna].setText("O");
 		casillasIA.add(((fila * TAM) + columna));
 		casillasLibres.remove((Integer) ((fila * TAM) + columna));
+		casillasLibresDisponibles--;
 
 		matrizBotones[columna][fila].setText("O");
 		casillasIA.add(((columna * TAM) + fila));
 		casillasLibres.remove((Integer) ((columna * TAM) + fila));
+		casillasLibresDisponibles--;
 
 		// Ponemos la puntuacion iniciar el los TextView de cada jugador
 		TVPuntuacionIA.setText(String.valueOf(casillasIA.size()));
@@ -95,6 +99,7 @@ class GameEngine extends BasicGameEngine{
 			botonAyuda.setClickable(false);
 			desactivarBotones(casillasDisponibles);
 			ayudaVisible = false;
+			casillasLibresDisponibles--;
 
 		}
 
@@ -176,7 +181,7 @@ class GameEngine extends BasicGameEngine{
 	}
 
 	private boolean comprobarJuegoFinalizado() {
-		if (casillasIA.size() + casillasJugador.size() == TAM * TAM) {
+		if (casillasLibresDisponibles == 0) {
 			Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
 			botonAbandonar.setText(R.string.textoReiniciar);
 			botonAbandonar.setOnClickListener(new View.OnClickListener() {

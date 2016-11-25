@@ -18,11 +18,13 @@ public abstract class BasicGameEngine {
     protected ArrayList<Integer> casillasLibres; // Casillas sin ocupar
     protected ArrayList<OrigenSeleccion> casillasDisponibles; // Casillas disponibles para su seleccion
     protected Turnos turnoJugadorActual; // Indica el turno actual - True si es J1 - False si es J2
+    protected int casillasLibresDisponibles;
 
     public BasicGameEngine(int TAM, Button[][] matrizBotones){
         this.TAM = TAM;
         this.matrizBotones = matrizBotones;
         this.coordenadas = new CoordenadasBusqueda(this.TAM);
+        this.casillasLibresDisponibles = TAM*TAM;
 
     }
 
