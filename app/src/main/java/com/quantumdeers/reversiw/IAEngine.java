@@ -18,7 +18,7 @@ public class IAEngine extends BasicGameEngine {
 
 
 
-    protected IAEngine(int profundidadMax, Button[][] matrizBotones) {
+    protected IAEngine(int profundidadMax, MiButton[][] matrizBotones) {
         super(TAM, matrizBotones);
         this.profundidadMax = profundidadMax;
         this.profundidadActual = 0;

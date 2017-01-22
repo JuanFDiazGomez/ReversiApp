@@ -1,18 +1,20 @@
 package com.quantumdeers.reversiw;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 class GameEngine extends BasicGameEngine{
-	private Principal principal; // Guardamos en una variable la actividad principal
-	private LinearLayout pantalla; // Este es el layout principal
+	private Juego juego; // Guardamos en una variable la actividad juego
+	private LinearLayout pantalla; // Este es el layout juego
 	private TextView TVPuntuacionJugador; // TextView donde se guarda la puntuacion del J1
 	private TextView TVPuntuacionIA; // TextView donde se guarda la puntuacion del J2
 	private boolean jugadorEmpieza; // Variable que especifica si el jugador empieza o la IA
@@ -21,9 +23,9 @@ class GameEngine extends BasicGameEngine{
 	private int turnoActual;
 	private IAEngine IA;
 
-	GameEngine(LinearLayout pantalla, int TAM, Button[][] matrizBotones, Principal principal) {
+	GameEngine(LinearLayout pantalla, int TAM, MiButton[][] matrizBotones, Juego juego) {
 		super(TAM,matrizBotones);
-		this.principal = principal;
+		this.juego = juego;
 		this.pantalla = pantalla;
 		this.casillasJugador = new ArrayList<>(TAM / 2);
 		this.casillasIA = new ArrayList<>(TAM / 2);
@@ -47,7 +49,8 @@ class GameEngine extends BasicGameEngine{
 		for (int tag = 0; tag < TAM * TAM; tag++) {
 			casillasLibres.add(tag);
 			matrizBotones[tag / TAM][tag % TAM].setClickable(false);
-			matrizBotones[tag / TAM][tag % TAM].setText("");
+			matrizBotones[tag / TAM][tag % TAM].getMiPincel().setColor(Color.TRANSPARENT);
+			matrizBotones[tag / TAM][tag % TAM].invalidate();
 		}
 
 		// Definimos las variables para inicializar el centro del tablero
@@ -58,22 +61,26 @@ class GameEngine extends BasicGameEngine{
 		TVPuntuacionJugador = (TextView) pantalla.findViewById(R.id.puntuacionJugador);
 		// Definimos las 4 casillas centrales
 
-		matrizBotones[fila][fila].setText("X");
+		matrizBotones[fila][fila].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador1));
+		matrizBotones[fila][fila].invalidate();
 		casillasJugador.add(((fila * TAM) + fila));
 		casillasLibres.remove((Integer) ((fila * TAM) + fila));
 		casillasLibresDisponibles--;
 
-		matrizBotones[columna][columna].setText("X");
+		matrizBotones[columna][columna].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador1));
+		matrizBotones[columna][columna].invalidate();
 		casillasJugador.add(((columna * TAM) + columna));
 		casillasLibres.remove((Integer) ((columna * TAM) + columna));
 		casillasLibresDisponibles--;
 
-		matrizBotones[fila][columna].setText("O");
+		matrizBotones[fila][columna].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador2));
+		matrizBotones[fila][columna].invalidate();
 		casillasIA.add(((fila * TAM) + columna));
 		casillasLibres.remove((Integer) ((fila * TAM) + columna));
 		casillasLibresDisponibles--;
 
-		matrizBotones[columna][fila].setText("O");
+		matrizBotones[columna][fila].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador2));
+		matrizBotones[columna][fila].invalidate();
 		casillasIA.add(((columna * TAM) + fila));
 		casillasLibres.remove((Integer) ((columna * TAM) + fila));
 		casillasLibresDisponibles--;
@@ -108,6 +115,7 @@ class GameEngine extends BasicGameEngine{
 			turnoActual++;
 			String simbolo = (turnoJugadorActual == Turnos.IA) ? "O" : "X";
 			jugada(boton[0]);
+			//TODO cambiar lo k envia al hilo de la UI
 			publishProgress(String.valueOf(boton[0]), simbolo);
 			try {
 				Thread.sleep(100);
@@ -128,10 +136,18 @@ class GameEngine extends BasicGameEngine{
 		@Override
 		protected void onProgressUpdate(String... values) {
 			super.onProgressUpdate();
+			int color = juego.getResources()
+					.getColor(
+							(turnoJugadorActual == Turnos.JUGADOR) ?
+									R.color.ficha_jugador1 : R.color.ficha_jugador2
+					);
 			int tag = Integer.parseInt(values[0]);
 			int fila = tag / TAM;
 			int columna = tag % TAM;
-			matrizBotones[fila][columna].setText(values[1]);
+			Paint pincel = matrizBotones[fila][columna].getMiPincel();
+			pincel.setColor(color);
+			matrizBotones[fila][columna].setMiPincel(pincel);
+			matrizBotones[fila][columna].invalidate();
 		}
 
 		@Override
@@ -222,6 +238,6 @@ class GameEngine extends BasicGameEngine{
 		} else {
 			strResult = "****Empate****";
 		}
-		Toast.makeText(principal, strResult, Toast.LENGTH_LONG).show();
+		Toast.makeText(juego, strResult, Toast.LENGTH_LONG).show();
 	}
 }

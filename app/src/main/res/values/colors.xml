@@ -9,4 +9,6 @@
     <color name="cuadrado_tablero_oscuro">#669900</color>
     <color name="cuadro_tablero_claro">#99cc00</color>
     <color name="color_provisional_instrucciones">#000000</color>
+    <color name="ficha_jugador1">#4b322c</color>
+    <color name="ficha_jugador2">#bfbebe</color>
 </resources>

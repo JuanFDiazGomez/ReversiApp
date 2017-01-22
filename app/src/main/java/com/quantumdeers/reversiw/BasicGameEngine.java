@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public abstract class BasicGameEngine {
 
-    protected Button[][] matrizBotones; // El tablero en si
+    protected MiButton[][] matrizBotones; // El tablero en si
     protected static int TAM; // Variable que especifica el tamaño del tablero
     protected CoordenadasBusqueda coordenadas; // Clase que contiene las coordenada de busqueda
     protected ArrayList<Integer> casillasJugador; // Casillas en posesion de J1
@@ -20,7 +20,7 @@ public abstract class BasicGameEngine {
     protected Turnos turnoJugadorActual; // Indica el turno actual - True si es J1 - False si es J2
     protected int casillasLibresDisponibles;
 
-    public BasicGameEngine(int TAM, Button[][] matrizBotones){
+    public BasicGameEngine(int TAM, MiButton[][] matrizBotones){
         this.TAM = TAM;
         this.matrizBotones = matrizBotones;
         this.coordenadas = new CoordenadasBusqueda(this.TAM);

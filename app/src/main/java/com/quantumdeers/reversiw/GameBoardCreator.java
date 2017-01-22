@@ -5,20 +5,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 class GameBoardCreator {
-    private Principal principal;
+    private Juego juego;
     private LinearLayout pantalla;
     private LinearLayout tablero;
-    private final static int TAM = 10;
-    private Button[][] matrizBotones;
+    private final static int TAM = 6;
+    private MiButton[][] matrizBotones;
     private GameEngine gameEngine;
 
-    GameBoardCreator(Principal principal) {
-        this.principal = principal;
+    GameBoardCreator(Juego juego) {
+        this.juego = juego;
         this.pantalla = crearPantalla();
-        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.principal);
+        this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.juego);
     }
 
     LinearLayout getPantalla() {
@@ -27,8 +26,8 @@ class GameBoardCreator {
     }
 
     private LinearLayout crearPantalla() {
-        pantalla = (LinearLayout) LayoutInflater.from(principal).
-                inflate(R.layout.activity_juego, new LinearLayout(principal), false);
+        pantalla = (LinearLayout) LayoutInflater.from(juego).
+                inflate(R.layout.activity_juego, new LinearLayout(juego), false);
         tablero = (LinearLayout) pantalla.findViewById(R.id.contenedor_tablero);
         Button botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
         botonAyuda.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +42,7 @@ class GameBoardCreator {
 
     private void modificarTablero() {
         LinearLayout[] arrayContenedorBotones = new LinearLayout[TAM];
-        matrizBotones = new Button[TAM][TAM];
+        matrizBotones = new MiButton[TAM][TAM];
         for (int fila = 0; fila < TAM; fila++) {
             arrayContenedorBotones[fila] = crearContenedorBotones();
             for (int columna = 0; columna < TAM; columna++) {
@@ -55,15 +54,15 @@ class GameBoardCreator {
     }
 
     private LinearLayout crearContenedorBotones() {
-        LinearLayout contenedor = new LinearLayout(principal);
+        LinearLayout contenedor = new LinearLayout(juego);
         contenedor.setLayoutParams(crearLayoutParams());
         contenedor.setOrientation(LinearLayout.HORIZONTAL);
         contenedor.setPadding(0, 0, 0, 0);
         return contenedor;
     }
 
-    private Button crearBoton(int fila, int columna) {
-        Button boton = new Button(principal);
+    private MiButton crearBoton(int fila, int columna) {
+        MiButton boton = new MiButton(juego);
         boton.setLayoutParams(crearLayoutParams());
         boton.setClickable(false);
         boton.setText("");
@@ -73,18 +72,18 @@ class GameBoardCreator {
         if (fila % 2 == 0) {
             if(columna % 2 == 0) {
                 boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_oscuro));
+                        juego.getResources().getColor(R.color.cuadro_tablero_oscuro));
             }else{
                 boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_claro));
+                        juego.getResources().getColor(R.color.cuadro_tablero_claro));
             }
         } else {
             if(columna % 2 != 0) {
                 boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_oscuro));
+                        juego.getResources().getColor(R.color.cuadro_tablero_oscuro));
             }else{
                 boton.setBackgroundColor(
-                        principal.getResources().getColor(R.color.cuadro_tablero_claro));
+                        juego.getResources().getColor(R.color.cuadro_tablero_claro));
             }
         }
 

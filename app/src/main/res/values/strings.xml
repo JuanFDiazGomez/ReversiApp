@@ -2,7 +2,7 @@
     <string name="app_name">ReversiW</string>
     <string name="titulo">Reversi World</string>
     <string name="desarrollado_por">Desarrollado por Juan F Díaz Gómez</string>
-    <string name="boton_entrar">Entrar</string>
+    <string name="boton_entrar">JUGAR</string>
     <string name="logoImg">logo</string>
     <string name="boton_ayuda">Ayuda</string>
     <string name="boton_abandonar">Abandonar</string>
@@ -17,4 +17,12 @@
     <string name="menuAcercaDe">Acerca de</string>
     <string name="menuConfiguracion">Configuracion</string>
     <string name="textoReiniciar">Reiniciar</string>
+    <string name="btn_puntuaciones">Puntuaciones</string>
+    <string-array name="btn_dificultadArray">
+        <item>Dificultad: Fácil</item>
+        <item>Dificultad: Normal</item>
+        <item>Dificultad: Difícil</item>
+    </string-array>
+    <string name="btn_instrucciones">Instrucciones</string>
+    <string name="btn_dificultarDefecto">Dificultad: Fácil</string>
 </resources>
