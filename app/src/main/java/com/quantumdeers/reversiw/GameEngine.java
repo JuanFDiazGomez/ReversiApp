@@ -1,8 +1,9 @@
 package com.quantumdeers.reversiw;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,7 @@ class GameEngine extends BasicGameEngine{
 	private boolean ayudaVisible;
 	private int turnoActual;
 	private IAEngine IA;
-
+	private ReversiDB db;
 	GameEngine(LinearLayout pantalla, int TAM, MiButton[][] matrizBotones, Juego juego) {
 		super(TAM,matrizBotones);
 		this.juego = juego;
@@ -39,6 +40,7 @@ class GameEngine extends BasicGameEngine{
 			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
 		}
 		this.IA = new IAEngine(1, matrizBotones);
+		db = new ReversiDB(juego,"ReversiDB",null,1);
 	}
 
 	private void iniciarJuego() {
@@ -156,6 +158,7 @@ class GameEngine extends BasicGameEngine{
 			actualizarPuntuaciones();
 			if (comprobarJuegoFinalizado()) {
 				tostadaResultado();
+				guardarPuntuaciones();
 			} else {
 				prepararSiguienteTurno();
 				/*
@@ -177,6 +180,12 @@ class GameEngine extends BasicGameEngine{
 				}
 			}
 		}
+	}
+
+	private void guardarPuntuaciones() {
+		ReversiDB reversiDB = new ReversiDB(juego,"ReversiDB",null,1);
+		SQLiteDatabase db = reversiDB.getWritableDatabase();
+
 	}
 
 	private int seleccionIA() {

@@ -1,14 +1,12 @@
 package com.quantumdeers.reversiw;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,7 +17,10 @@ public class Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+        //Siempre ponemos la dificultad inicial en facil
         this.findViewById(R.id.btn_MW_Dificultad).setTag(Integer.valueOf("0"));
+        //Abrimos la base dedatos
+        ReversiDB reversiDB = new ReversiDB(this,"ReversiDB",null,1);
     }
 
     @Override

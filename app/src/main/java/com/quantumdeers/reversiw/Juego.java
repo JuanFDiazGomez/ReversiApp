@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 public class Juego extends AppCompatActivity {
-
+    public ReversiDB db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
