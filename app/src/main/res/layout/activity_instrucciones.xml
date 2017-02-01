@@ -19,6 +19,52 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquet felis et urna placerat, non accumsan dolor consequat. Mauris vulputate ante consectetur felis imperdiet tincidunt. Praesent id auctor mauris. Nulla facilisis, tellus non faucibus condimentum, tellus est lobortis massa, non maximus ipsum sapien vel arcu. Donec id augue tellus. Aliquam erat volutpat. Nulla nisi risus, iaculis vel tincidunt at, efficitur vel risus."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView72"
+                android:layout_margin="5dp"
+                android:background="@color/bg_Instrucciones"
+                android:padding="5dp" />
+
+            <TextView
+                android:text="Vestibulum pretium ligula at libero cursus aliquam. Proin sed nisi elit. Ut malesuada rhoncus ullamcorper. Sed a orci mauris. Mauris iaculis sem eu massa pellentesque varius. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur a lacus ullamcorper, facilisis augue ut, maximus lorem. Curabitur varius gravida scelerisque. "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView73"
+                android:layout_margin="5dp"
+                android:background="@color/bg_Instrucciones"
+                android:padding="5dp" />
+
+            <TextView
+                android:text="Maecenas imperdiet nisi ex. Praesent eu est mattis, semper felis non, sollicitudin justo. Vivamus feugiat elementum odio et ultricies. Aliquam vestibulum nisi ut suscipit rhoncus. Pellentesque sollicitudin rutrum neque, sed faucibus turpis posuere ac. Nam posuere lobortis felis, eu sollicitudin tortor rhoncus id. Proin vel urna efficitur, semper augue ut, lobortis neque. Aenean ut libero ante. Suspendisse posuere condimentum arcu. In a dictum purus."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView74"
+                android:layout_margin="5dp"
+                android:background="@color/bg_Instrucciones"
+                android:padding="5dp" />
+
+            <TextView
+                android:text="Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam ultrices nec dolor id tristique. Nunc vitae eros ut ipsum porta semper ut eget massa. "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView75"
+                android:layout_margin="5dp"
+                android:background="@color/bg_Instrucciones"
+                android:padding="5dp" />
+
+            <TextView
+                android:text="Aliquam elementum congue felis ut lobortis. Curabitur gravida varius tellus ut pretium. Duis vestibulum, nulla id malesuada consequat, lorem enim iaculis urna, ut fringilla tellus est sed ipsum. Quisque felis turpis, tempor vel suscipit eget, pellentesque luctus nunc. Nulla et diam semper, iaculis turpis nec, tincidunt nunc. Integer ut dolor ut orci ultrices cursus vitae at dui. Aliquam ut quam a felis pellentesque pellentesque ac lacinia sapien. In at lacus et felis efficitur pharetra. "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView76"
+                android:layout_margin="5dp"
+                android:background="@color/bg_Instrucciones"
+                android:padding="5dp" />
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

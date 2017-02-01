@@ -11,4 +11,5 @@
     <color name="color_provisional_instrucciones">#000000</color>
     <color name="ficha_jugador1">#4b322c</color>
     <color name="ficha_jugador2">#bfbebe</color>
+    <color name="bg_Instrucciones">#d4d4d4</color>
 </resources>
