@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public abstract class BasicGameEngine {
 
+    //TODO cambiar la logica de juego a una Matriz de CasillaType para eliminar los arrayList
+    //TODO CasillaType.Jugador Empty o IA
     protected MiButton[][] matrizBotones; // El tablero en si
     protected static int TAM; // Variable que especifica el tamaño del tablero
     protected CoordenadasBusqueda coordenadas; // Clase que contiene las coordenada de busqueda

@@ -1,17 +1,23 @@
 package com.quantumdeers.reversiw;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 class GameEngine extends BasicGameEngine{
 	private Juego juego; // Guardamos en una variable la actividad juego
@@ -185,6 +191,37 @@ class GameEngine extends BasicGameEngine{
 	private void guardarPuntuaciones() {
 		ReversiDB reversiDB = new ReversiDB(juego,"ReversiDB",null,1);
 		SQLiteDatabase db = reversiDB.getWritableDatabase();
+		LayoutInflater inflater = LayoutInflater.from(juego);
+		View view = inflater.inflate(R.layout.prompt_dialog_nickname, null);
+		AlertDialog.Builder builder = new AlertDialog.Builder(juego);
+		builder.setTitle(R.string.input_dialog_nickname);
+		final EditText txtNickname = (EditText) view.findViewById(R.id.prompt_nickname);
+		builder.setCancelable(true);
+		builder.setPositiveButton(R.string.guardarPuntuaciones, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				String nickName = txtNickname.getText().toString();
+				ReversiDB reversiDB = new ReversiDB(juego,"ReversiDB",null,1);
+				SQLiteDatabase db = reversiDB.getWritableDatabase();
+				String sql = "INSERT INTO scores (nick,score,boardSize,date) VALUES ('"
+						+nickName+"',"
+						+casillasJugador.size()+","
+						+TAM*TAM+",'"
+						+new java.sql.Date(new Date().getTime())+"')";
+				db.execSQL(sql);
+				db.close();
+			}
+		});
+		builder.setNegativeButton("No guardar", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				dialogInterface.cancel();
+			}
+		});
+
+		builder.setView(view);
+		builder.show();
+
 
 	}
 

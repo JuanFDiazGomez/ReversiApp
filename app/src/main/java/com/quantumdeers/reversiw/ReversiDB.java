@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 public class ReversiDB extends SQLiteOpenHelper {
     String sqlCreate = "CREATE TABLE scores(" +
-            "nombre TEXT," +
-            "puntuacion NUM," +
-            "total_casillas NUM," +
-            "fecha DATE" +
+            "nick TEXT," +
+            "score NUM," +
+            "boardSize NUM," +
+            "date DATE" +
             ")";
     public ReversiDB(Context contexto, String nombre, SQLiteDatabase.CursorFactory factory, int version){
         super(contexto, nombre, factory, version);

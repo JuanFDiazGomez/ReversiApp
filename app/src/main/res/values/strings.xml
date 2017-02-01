@@ -23,6 +23,12 @@
         <item>Dificultad: Normal</item>
         <item>Dificultad: Difícil</item>
     </string-array>
+    <string name="input_dialog_nickname">Introduce tu nombre</string>
     <string name="btn_instrucciones">Instrucciones</string>
     <string name="btn_dificultarDefecto">Dificultad: Fácil</string>
+    <string name="guardarPuntuaciones">Guardar puntuaciones</string>
+    <string name="puntuacionesNombre">Nombre</string>
+    <string name="puntuacionesPuntosProp">Puntos</string>
+    <string name="puntuacionesTotal">Total</string>
+    <string name="puntuacionesFecha">Fecha</string>
 </resources>
