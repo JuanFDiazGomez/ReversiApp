@@ -10,7 +10,7 @@ class GameBoardCreator {
     private Juego juego;
     private LinearLayout pantalla;
     private LinearLayout tablero;
-    private final static int TAM = 4;
+    private final static int TAM = 10;
     private MiButton[][] matrizBotones;
     private GameEngine gameEngine;
 

@@ -233,7 +233,10 @@ class GameEngine extends BasicGameEngine{
 	protected void desactivarBotones(ArrayList<OrigenSeleccion> botonesADesactivar) {
 		for (OrigenSeleccion tag : botonesADesactivar) {
 			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setClickable(false);
-			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setText("");
+			Paint pincel = matrizBotones[tag.disponile / TAM][tag.disponile % TAM].getMiPincel();
+			pincel.setColor(Color.TRANSPARENT);
+			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].setMiPincel(pincel);
+			matrizBotones[tag.disponile / TAM][tag.disponile % TAM].invalidate();
 		}
 	}
 
@@ -259,10 +262,15 @@ class GameEngine extends BasicGameEngine{
 	}
 
 	void mostrarDisponibles() {
+		//AyudaVisible inicialmente esta a false
 		ayudaVisible = !ayudaVisible;
-		String simbolo = (ayudaVisible) ? "*" : "";
+		int color = (ayudaVisible) ? juego.getResources().getColor(R.color.ficha_jugador1) : Color.TRANSPARENT;
 		for (OrigenSeleccion disponibles : casillasDisponibles) {
-			matrizBotones[disponibles.disponile / TAM][disponibles.disponile % TAM].setText(simbolo);
+			Paint pincel = matrizBotones[disponibles.disponile / TAM][disponibles.disponile % TAM].getMiPincel();
+			pincel.setColor(color);
+			pincel.setAlpha((ayudaVisible) ? 70 : 0);
+			matrizBotones[disponibles.disponile / TAM][disponibles.disponile % TAM].setMiPincel(pincel);
+			matrizBotones[disponibles.disponile / TAM][disponibles.disponile % TAM].invalidate();
 		}
 	}
 
