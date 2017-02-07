@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="fondo_principal">#7a94f2</color>
     <color name="color_tablero">#3f3f3f</color>
     <color name="cuadro_tablero_oscuro">#669900</color>
@@ -11,5 +11,7 @@
     <color name="color_provisional_instrucciones">#000000</color>
     <color name="ficha_jugador1">#000000</color>
     <color name="ficha_jugador2">#ffffff</color>
-    <color name="bg_Instrucciones">#d4d4d4</color>
+    <color name="bg_Instrucciones">#000000</color>
+    <color name="bg_instrucciones_text">#baeba9</color>
+    <color name="bg_Instrucciones_img">#3e2723</color>
 </resources>

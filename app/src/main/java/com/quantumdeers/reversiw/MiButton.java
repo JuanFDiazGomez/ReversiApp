@@ -33,7 +33,7 @@ public class MiButton extends Button{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(miPincel.getColor()!=Color.TRANSPARENT){
-            canvas.drawCircle(this.getWidth()/2F, this.getHeight()/2F, this.getHeight()/4F, miPincel);
+            canvas.drawCircle(this.getWidth()/2F, this.getHeight()/2F, this.getHeight()/3F, miPincel);
         }
     }
 }
