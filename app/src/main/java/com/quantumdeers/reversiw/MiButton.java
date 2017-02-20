@@ -9,7 +9,7 @@ import android.widget.Button;
 /**
  * Created by juanfdg on 22/01/17.
  */
-
+//TODO agregar un campo al boton que sea un enum de tipo vacio jugador o makina
 public class MiButton extends Button{
     Paint miPincel;
     public MiButton(Context context) {

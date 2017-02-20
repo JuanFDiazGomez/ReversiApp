@@ -1,7 +1,10 @@
 package com.quantumdeers.reversiw;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,7 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Principal extends AppCompatActivity {
 
@@ -20,7 +32,8 @@ public class Principal extends AppCompatActivity {
         //Siempre ponemos la dificultad inicial en facil
         this.findViewById(R.id.btn_MW_Dificultad).setTag(Integer.valueOf("0"));
         //Abrimos la base dedatos
-        ReversiDB reversiDB = new ReversiDB(this,"ReversiDB",null,1);
+        ReversiDB reversiDB = new ReversiDB(this, "ReversiDB", null, 1);
+        new NewsAsyncTask(this).execute();
     }
 
     @Override
@@ -28,6 +41,7 @@ public class Principal extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_principal, menu);
         return true;
     }
+
     //TODO cambiar la funcionalidad de este menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -49,6 +63,7 @@ public class Principal extends AppCompatActivity {
     private void tostadaNoConfiguracion() {
         Toast.makeText(this, "Configuración aun no disponible", Toast.LENGTH_LONG).show();
     }
+
     // TODO esto hacerlo como tostada o como pantalla?
     private void tostadaAcercaDe() {
         LayoutInflater inflater = getLayoutInflater();
@@ -62,7 +77,7 @@ public class Principal extends AppCompatActivity {
     }
 
     public void principal_CambiarPantalla(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.btn_MW_Jugar:
                 cambiarPantalla(Juego.class);
                 break;
@@ -86,7 +101,7 @@ public class Principal extends AppCompatActivity {
     public void principal_CambiarDificultad(View view) {
         Button boton = (Button) view;
         int dificultadActual = (Integer) boton.getTag();
-        dificultadActual = (dificultadActual<2) ? dificultadActual + 1 : 0;
+        dificultadActual = (dificultadActual < 2) ? dificultadActual + 1 : 0;
         boton.setText(
                 (getResources().
                         getStringArray(R.array.btn_dificultadArray))[dificultadActual]

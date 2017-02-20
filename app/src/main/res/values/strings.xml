@@ -36,4 +36,8 @@
     <string name="txt_tuto_ayuda">Ahora podremos pulsar el boton superior de \"Ayuda\" para obtener información de todos los movimientos posibles horizontal, vertical o diagonal.</string>
     <string name="txt_tuto_postmov">Tras realizar nuestro movimiento, vemos como ahora tenemos mayor numero de fichas negras que blancas. Ahora es el turno de las blancas.</string>
     <string name="txt_tuto_final" >El objetivo principal del juego es llegar a tener un numero superior de fichar que tu contrincante. Hay muchas estrategias posibles como capturar las esquinas, lo que da un control sobre el juego, evitar las zonas colindantes a las esquinas, pues son puntos debiles, y muchas mas que puedes descubrir tu mismo.</string>
+    <string name="btn_cerrar">Cerrar</string>
+    <string name="noticias">Noticias</string>
+    <string name="news_prompt_header">NOTICIAS</string>
+    <string name="url">http://192.168.100.7</string>
 </resources>
