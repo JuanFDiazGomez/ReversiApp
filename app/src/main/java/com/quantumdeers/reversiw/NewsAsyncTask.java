@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
@@ -31,6 +32,7 @@ public class NewsAsyncTask extends AsyncTask {
     private Drawable[] drawables;
     private ProgressDialog pg;
     private Boolean conexionRealizada = false;
+    private final String urlIP="10.0.2.2";
 
     public NewsAsyncTask(Context context) {
 
@@ -50,10 +52,9 @@ public class NewsAsyncTask extends AsyncTask {
     protected Object doInBackground(Object[] objects) {
         BufferedReader reader = null;
         try {
-            URL url = new URL("http://192.168.100.7/infodb.php");
+            URL url = new URL("http://"+urlIP+"/infodb.php");
             HttpURLConnection con = (HttpURLConnection) url
                     .openConnection();
-
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String line;
@@ -64,7 +65,7 @@ public class NewsAsyncTask extends AsyncTask {
             jsonArray = new JSONArray(cadena);
             drawables = new Drawable[jsonArray.length()];
             for (int i = 0; i < jsonArray.length(); i++) {
-                url = new URL("http://192.168.100.7/imagenes/" + jsonArray.getJSONObject(i).getString("image"));
+                url = new URL("http://"+urlIP+"/imagenes/" + jsonArray.getJSONObject(i).getString("image"));
                 con = (HttpURLConnection) url
                         .openConnection();
                 drawables[i] = Drawable.createFromStream(con.getInputStream(), "src name");
