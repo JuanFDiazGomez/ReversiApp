@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="showed_tam">
+        <item name="peq">6x6</item>
+        <item name="med">8x8</item>
+        <item name="gr">10x10</item>
+    </string-array>
+    <string-array name="turno_inicial">
+        <item name="jugador">Jugador</item>
+        <item name="ia">IA</item>
+    </string-array>
+    <string-array name="color_jugador">
+        <item name="blanco">Blanco</item>
+        <item name="negro">Negro</item>
+    </string-array>
+    <integer-array name="saved_tam">
+        <item name="peq">6</item>
+        <item name="med">8</item>
+        <item name="gr">10</item>
+    </integer-array>
+</resources>

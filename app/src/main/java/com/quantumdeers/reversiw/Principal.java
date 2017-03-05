@@ -48,32 +48,16 @@ public class Principal extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_configuracion:
-                tostadaNoConfiguracion();
+                cambiarPantalla(Preferences.class);
                 break;
             case R.id.menu_acerca_de:
-                tostadaAcercaDe();
+                cambiarPantalla(Acerca_de.class);
                 break;
             case R.id.menu_salir:
                 this.finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void tostadaNoConfiguracion() {
-        Toast.makeText(this, "Configuración aun no disponible", Toast.LENGTH_LONG).show();
-    }
-
-    // TODO esto hacerlo como tostada o como pantalla?
-    private void tostadaAcercaDe() {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.activity_acerca_de, null);
-        //layout.setBackgroundColor(Color.TRANSPARENT);
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
     }
 
     public void principal_CambiarPantalla(View view) {

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ReversiW</string>
     <string name="titulo">Reversi World</string>
-    <string name="desarrollado_por">Desarrollado por Juan F Díaz Gómez</string>
+    <string name="desarrollado_por">Desarrollado por:</string>
     <string name="boton_entrar">JUGAR</string>
     <string name="logoImg">logo</string>
     <string name="boton_ayuda">Ayuda</string>
@@ -40,4 +40,6 @@
     <string name="noticias">Noticias</string>
     <string name="news_prompt_header">NOTICIAS</string>
     <string name="url">http://192.168.100.7</string>
+    <string name="author">Juan Francisco Diaz Gomez</string>
+    <string name="descripcion">Aplicación desarrollada como proyecto final del modulo Programacion Multimedia y Dispositivos de 2º Curso de Desarrollo de aplicaciones multiplataforma en el I.E.S Poeta Paco Molla 2017</string>
 </resources>

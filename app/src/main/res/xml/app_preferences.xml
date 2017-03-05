@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/showed_tam"
+        android:entryValues="@array/showed_tam"
+        android:title="Tamaño del tablero"
+        android:key="list_preference_1" />
+    <ListPreference
+        android:defaultValue="1"
+        android:title="Turno inicial"
+        android:entries="@array/turno_inicial"
+        android:entryValues="@array/turno_inicial"
+        android:key="list_preference_2" />
+    <ListPreference
+        android:defaultValue="1"
+        android:title="Color ficha jugador"
+        android:entries="@array/color_jugador"
+        android:entryValues="@array/color_jugador"
+        android:key="list_preference_3" />
+</PreferenceScreen>

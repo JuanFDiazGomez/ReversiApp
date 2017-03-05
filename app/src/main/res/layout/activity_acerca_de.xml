@@ -27,14 +27,25 @@
             android:textStyle="normal|bold"
             android:layout_marginTop="100dp" />
 
-        <Button
-            android:text="@string/boton_salir"
+        <TextView
+            android:text="@string/author"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/botonSalir"
+            android:id="@+id/textView17"
             android:textSize="24sp"
-            android:fontFamily="casual"
-            android:textStyle="normal|bold"
-            android:layout_marginTop="100dp" />
+            android:textAlignment="center"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:text="@string/descripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView19"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="40dp" />
+
     </LinearLayout>
 </RelativeLayout>

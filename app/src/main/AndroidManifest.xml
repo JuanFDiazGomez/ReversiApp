@@ -15,10 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Acerca_de" />
-        <activity android:name=".Instrucciones" />
+        <activity android:name=".Acerca_de"/>
+        <activity android:name=".Instrucciones"/>
         <activity android:name=".Puntuaciones"></activity>
         <activity android:name=".Juego"></activity>
+        <activity android:name=".Preferences"></activity>
     </application>
 
 </manifest>
