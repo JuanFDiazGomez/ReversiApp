@@ -6,17 +6,17 @@
         android:entries="@array/showed_tam"
         android:entryValues="@array/showed_tam"
         android:title="Tamaño del tablero"
-        android:key="list_preference_1" />
+        android:key="tam" />
     <ListPreference
         android:defaultValue="1"
         android:title="Turno inicial"
         android:entries="@array/turno_inicial"
         android:entryValues="@array/turno_inicial"
-        android:key="list_preference_2" />
+        android:key="inicio" />
     <ListPreference
         android:defaultValue="1"
         android:title="Color ficha jugador"
         android:entries="@array/color_jugador"
         android:entryValues="@array/color_jugador"
-        android:key="list_preference_3" />
+        android:key="color" />
 </PreferenceScreen>

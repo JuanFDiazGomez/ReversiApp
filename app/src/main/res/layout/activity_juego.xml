@@ -20,15 +20,6 @@
         android:layout_marginBottom="5dp">
 
         <TextView
-            android:text="@string/logoImg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/textView4"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:gravity="center" />
-
-        <TextView
             android:text="@string/valor_puntuacion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,27 +28,39 @@
             android:textAlignment="center"
             android:gravity="center" />
 
+        <com.quantumdeers.reversiw.MiButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/casillaJugador"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:background="@android:color/transparent" />
+
         <Button
             android:text="@string/boton_ayuda"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/botonAyuda"
-            android:layout_weight="0.8" />
+            android:layout_weight="0.8"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:fontFamily="casual"
+            android:textSize="24sp" />
+
+        <com.quantumdeers.reversiw.MiButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/casillaMaquina"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:background="@android:color/transparent" />
 
         <TextView
             android:text="@string/valor_puntuacion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/puntuacionIA"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:gravity="center" />
-
-        <TextView
-            android:text="@string/logoImg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/textView6"
             android:layout_weight="1"
             android:textAlignment="center"
             android:gravity="center" />

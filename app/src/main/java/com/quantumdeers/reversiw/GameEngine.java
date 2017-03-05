@@ -2,12 +2,15 @@ package com.quantumdeers.reversiw;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,12 +27,16 @@ class GameEngine extends BasicGameEngine{
 	private LinearLayout pantalla; // Este es el layout juego
 	private TextView TVPuntuacionJugador; // TextView donde se guarda la puntuacion del J1
 	private TextView TVPuntuacionIA; // TextView donde se guarda la puntuacion del J2
-	private boolean jugadorEmpieza; // Variable que especifica si el jugador empieza o la IA
 	private Button botonAyuda;
 	private boolean ayudaVisible;
-	private int turnoActual;
 	private IAEngine IA;
 	private ReversiDB db;
+	private MiButton casillaJugador;
+	private MiButton casillaIA;
+	private int[] colorTurnoActivoGradient = {Color.rgb(102,153,0),Color.TRANSPARENT};
+	private Drawable colorTurnoActivo = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,colorTurnoActivoGradient);
+	private int turnoActual;
+
 	GameEngine(LinearLayout pantalla, int TAM, MiButton[][] matrizBotones, Juego juego) {
 		super(TAM,matrizBotones);
 		this.juego = juego;
@@ -38,21 +45,37 @@ class GameEngine extends BasicGameEngine{
 		this.casillasIA = new ArrayList<>(TAM / 2);
 		this.casillasLibres = new ArrayList<>(TAM * TAM);
 		this.casillasDisponibles = new ArrayList<>();
-		this.jugadorEmpieza = true;
+		this.asignarPreferencias();
 		this.ayudaVisible = false;
 		this.botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
 		iniciarJuego();
-		if (turnoJugadorActual == Turnos.IA) {
-			this.getTareaAsincrona().execute((int) (Math.random() * casillasDisponibles.size()));
+		if (this.turnoJugadorActual == Turnos.IA) {
+			casillaIA.setBackground(colorTurnoActivo);
+			this.getTareaAsincrona().execute(seleccionIA());
+		}else{
+			casillaIA.setBackground(colorTurnoActivo);
 		}
 		this.IA = new IAEngine(1, matrizBotones);
 		db = new ReversiDB(juego,"ReversiDB",null,1);
 	}
 
+	private void asignarPreferencias() {
+		SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(juego);
+		this.turnoJugadorActual =
+				(preferencias.getString("inicio","Jugador").equals("Jugador")) ? Turnos.JUGADOR : Turnos.IA;
+		casillaJugador = (MiButton) pantalla.findViewById(R.id.casillaJugador);
+		casillaIA = (MiButton) pantalla.findViewById(R.id.casillaMaquina);
+		if(preferencias.getString("color","Blaco").equals("Blanco")){
+			casillaJugador.getMiPincel().setColor(Color.WHITE);
+			casillaIA.getMiPincel().setColor(Color.BLACK);
+		}else{
+			casillaJugador.getMiPincel().setColor(Color.BLACK);
+			casillaIA.getMiPincel().setColor(Color.WHITE);
+		}
+	}
+
 	private void iniciarJuego() {
 		turnoActual = 0;
-		// Definimos de quien es el primer turno
-		turnoJugadorActual = (jugadorEmpieza) ? Turnos.JUGADOR : Turnos.IA;
 		// Agregamos todas las casillas a nuestra variable que guarda las libres
 		for (int tag = 0; tag < TAM * TAM; tag++) {
 			casillasLibres.add(tag);
