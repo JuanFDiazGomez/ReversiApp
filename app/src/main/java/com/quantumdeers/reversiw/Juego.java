@@ -57,4 +57,8 @@ public class Juego extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
     }
+
+    public void abandonar_onClick(View view) {
+        this.finish();
+    }
 }

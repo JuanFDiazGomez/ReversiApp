@@ -67,7 +67,8 @@
             android:layout_weight="0.06"
             android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:onClick="abandonar_onClick" />
 
         <TextView
             android:text="0"
