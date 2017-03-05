@@ -26,7 +26,8 @@
             android:id="@+id/puntuacionJugador"
             android:layout_weight="1"
             android:textAlignment="center"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textSize="24sp" />
 
         <com.quantumdeers.reversiw.MiButton
             android:layout_width="match_parent"
@@ -63,7 +64,8 @@
             android:id="@+id/puntuacionIA"
             android:layout_weight="1"
             android:textAlignment="center"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textSize="24sp" />
 
     </LinearLayout>
 
@@ -79,14 +81,14 @@
     </LinearLayout>
 
     <Button
-        android:text="@string/boton_abandonar"
+        android:text="@string/boton_reiniciar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/botonAbandonar"
-        android:fontFamily="sans-serif-medium"
-        android:textSize="18sp"
+        android:id="@+id/botonReiniciar"
+        android:fontFamily="casual"
+        android:textSize="30sp"
         android:layout_weight="1"
         android:layout_marginTop="6dp"
-        android:onClick="abandonar_onClick" />
+        style="@style/Widget.AppCompat.Button.Borderless" />
 
 </LinearLayout>

@@ -4,7 +4,7 @@
     <ListPreference
         android:defaultValue="1"
         android:entries="@array/showed_tam"
-        android:entryValues="@array/showed_tam"
+        android:entryValues="@array/entry_tam"
         android:title="Tamaño del tablero"
         android:key="tam" />
     <ListPreference

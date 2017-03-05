@@ -10,28 +10,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.quantumdeers.reversiw.Principal"
     android:background="@color/fondo_principal"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="horizontal">
 
     <TextView
         android:text="@string/titulo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/textView"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="36sp"
         android:textAlignment="center"
         android:typeface="monospace"
         android:fontFamily="casual"
-        android:layout_marginTop="40dp"
-        android:layout_weight="1"
-        android:paddingTop="20dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1">
 
         <Button

@@ -55,6 +55,7 @@ public class NewsAsyncTask extends AsyncTask {
             URL url = new URL("http://"+urlIP+"/infodb.php");
             HttpURLConnection con = (HttpURLConnection) url
                     .openConnection();
+            con.setConnectTimeout(3000);
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String line;

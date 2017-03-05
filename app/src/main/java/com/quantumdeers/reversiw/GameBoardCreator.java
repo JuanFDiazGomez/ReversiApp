@@ -11,11 +11,12 @@ class GameBoardCreator {
     private Juego juego;
     private LinearLayout pantalla;
     private LinearLayout tablero;
-    private final static int TAM = 10;
+    private int TAM = 10;
     private MiButton[][] matrizBotones;
     private GameEngine gameEngine;
 
     GameBoardCreator(Juego juego) {
+        this.TAM = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(juego).getString("tam","8"));
         this.juego = juego;
         this.pantalla = crearPantalla();
         this.gameEngine = new GameEngine(pantalla, TAM, matrizBotones,this.juego);

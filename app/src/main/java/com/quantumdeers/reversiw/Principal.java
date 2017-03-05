@@ -29,8 +29,6 @@ public class Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-        //Siempre ponemos la dificultad inicial en facil
-        this.findViewById(R.id.btn_MW_Dificultad).setTag(Integer.valueOf("0"));
         //Abrimos la base dedatos
         ReversiDB reversiDB = new ReversiDB(this, "ReversiDB", null, 1);
         new NewsAsyncTask(this).execute();

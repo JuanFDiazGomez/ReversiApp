@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
@@ -33,9 +32,11 @@ class GameEngine extends BasicGameEngine{
 	private ReversiDB db;
 	private MiButton casillaJugador;
 	private MiButton casillaIA;
+	int colorJugador;
+	int colorMaquina;
+	Button botonReiniciar;
 	private int[] colorTurnoActivoGradient = {Color.rgb(102,153,0),Color.TRANSPARENT};
 	private Drawable colorTurnoActivo = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,colorTurnoActivoGradient);
-	private int turnoActual;
 
 	GameEngine(LinearLayout pantalla, int TAM, MiButton[][] matrizBotones, Juego juego) {
 		super(TAM,matrizBotones);
@@ -50,10 +51,7 @@ class GameEngine extends BasicGameEngine{
 		this.botonAyuda = (Button) pantalla.findViewById(R.id.botonAyuda);
 		iniciarJuego();
 		if (this.turnoJugadorActual == Turnos.IA) {
-			casillaIA.setBackground(colorTurnoActivo);
 			this.getTareaAsincrona().execute(seleccionIA());
-		}else{
-			casillaIA.setBackground(colorTurnoActivo);
 		}
 		this.IA = new IAEngine(1, matrizBotones);
 		db = new ReversiDB(juego,"ReversiDB",null,1);
@@ -66,16 +64,25 @@ class GameEngine extends BasicGameEngine{
 		casillaJugador = (MiButton) pantalla.findViewById(R.id.casillaJugador);
 		casillaIA = (MiButton) pantalla.findViewById(R.id.casillaMaquina);
 		if(preferencias.getString("color","Blaco").equals("Blanco")){
-			casillaJugador.getMiPincel().setColor(Color.WHITE);
-			casillaIA.getMiPincel().setColor(Color.BLACK);
+			colorJugador = Color.WHITE;
+			colorMaquina = Color.BLACK;
 		}else{
-			casillaJugador.getMiPincel().setColor(Color.BLACK);
-			casillaIA.getMiPincel().setColor(Color.WHITE);
+			colorJugador = Color.BLACK;
+			colorMaquina = Color.WHITE;
 		}
+		casillaJugador.getMiPincel().setColor(colorJugador);
+		casillaIA.getMiPincel().setColor(colorMaquina);
+		cambiarColorTurnoActivo();
 	}
 
 	private void iniciarJuego() {
-		turnoActual = 0;
+		botonReiniciar = (Button) pantalla.findViewById(R.id.botonReiniciar);
+		botonReiniciar.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View botonPulsado) {
+				reiniciar();
+			}
+		});
 		// Agregamos todas las casillas a nuestra variable que guarda las libres
 		for (int tag = 0; tag < TAM * TAM; tag++) {
 			casillasLibres.add(tag);
@@ -92,25 +99,25 @@ class GameEngine extends BasicGameEngine{
 		TVPuntuacionJugador = (TextView) pantalla.findViewById(R.id.puntuacionJugador);
 		// Definimos las 4 casillas centrales
 
-		matrizBotones[fila][fila].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador1));
+		matrizBotones[fila][fila].getMiPincel().setColor(colorJugador);
 		matrizBotones[fila][fila].invalidate();
 		casillasJugador.add(((fila * TAM) + fila));
 		casillasLibres.remove((Integer) ((fila * TAM) + fila));
 		casillasLibresDisponibles--;
 
-		matrizBotones[columna][columna].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador1));
+		matrizBotones[columna][columna].getMiPincel().setColor(colorJugador);
 		matrizBotones[columna][columna].invalidate();
 		casillasJugador.add(((columna * TAM) + columna));
 		casillasLibres.remove((Integer) ((columna * TAM) + columna));
 		casillasLibresDisponibles--;
 
-		matrizBotones[fila][columna].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador2));
+		matrizBotones[fila][columna].getMiPincel().setColor(colorMaquina);
 		matrizBotones[fila][columna].invalidate();
 		casillasIA.add(((fila * TAM) + columna));
 		casillasLibres.remove((Integer) ((fila * TAM) + columna));
 		casillasLibresDisponibles--;
 
-		matrizBotones[columna][fila].getMiPincel().setColor(juego.getResources().getColor(R.color.ficha_jugador2));
+		matrizBotones[columna][fila].getMiPincel().setColor(colorMaquina);
 		matrizBotones[columna][fila].invalidate();
 		casillasIA.add(((columna * TAM) + fila));
 		casillasLibres.remove((Integer) ((columna * TAM) + fila));
@@ -133,6 +140,7 @@ class GameEngine extends BasicGameEngine{
 	protected class jugadaAsinkTask extends AsyncTask<Integer, String, Void> {
 		@Override
 		protected void onPreExecute() {
+			botonReiniciar.setClickable(Boolean.FALSE);
 			super.onPreExecute();
 			botonAyuda.setClickable(false);
 			desactivarBotones(casillasDisponibles);
@@ -143,13 +151,12 @@ class GameEngine extends BasicGameEngine{
 
 		@Override
 		protected Void doInBackground(Integer... boton) {
-			turnoActual++;
 			String simbolo = (turnoJugadorActual == Turnos.IA) ? "O" : "X";
 			jugada(boton[0]);
 			//TODO cambiar lo k envia al hilo de la UI
 			publishProgress(String.valueOf(boton[0]), simbolo);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -167,11 +174,8 @@ class GameEngine extends BasicGameEngine{
 		@Override
 		protected void onProgressUpdate(String... values) {
 			super.onProgressUpdate();
-			int color = juego.getResources()
-					.getColor(
-							(turnoJugadorActual == Turnos.JUGADOR) ?
-									R.color.ficha_jugador1 : R.color.ficha_jugador2
-					);
+			int color = (turnoJugadorActual == Turnos.JUGADOR) ?
+									colorJugador : colorMaquina;
 			int tag = Integer.parseInt(values[0]);
 			int fila = tag / TAM;
 			int columna = tag % TAM;
@@ -190,6 +194,7 @@ class GameEngine extends BasicGameEngine{
 				guardarPuntuaciones();
 			} else {
 				prepararSiguienteTurno();
+				cambiarColorTurnoActivo();
 				/*
 				Si al terminar de preparar el siguiente turno ninguno de los dos puede mover
                 el juego habrá finalizado
@@ -205,9 +210,21 @@ class GameEngine extends BasicGameEngine{
 						getTareaAsincrona().execute(seleccionIA());
 					}
 				} else {
+					guardarPuntuaciones();
 					tostadaResultado();
 				}
 			}
+			botonReiniciar.setClickable(Boolean.TRUE);
+		}
+	}
+
+	private void cambiarColorTurnoActivo() {
+		if (this.turnoJugadorActual == Turnos.IA) {
+			casillaIA.setBackground(colorTurnoActivo);
+			casillaJugador.setBackground(null);
+		}else{
+			casillaJugador.setBackground(colorTurnoActivo);
+			casillaIA.setBackground(null);
 		}
 	}
 
@@ -216,7 +233,7 @@ class GameEngine extends BasicGameEngine{
 		SQLiteDatabase db = reversiDB.getWritableDatabase();
 		LayoutInflater inflater = LayoutInflater.from(juego);
 		View view = inflater.inflate(R.layout.prompt_dialog_nickname, null);
-		AlertDialog.Builder builder = new AlertDialog.Builder(juego);
+		AlertDialog.Builder builder = new AlertDialog.Builder(juego,AlertDialog.THEME_HOLO_LIGHT);
 		builder.setTitle(R.string.input_dialog_nickname);
 		final EditText txtNickname = (EditText) view.findViewById(R.id.prompt_nickname);
 		builder.setCancelable(true);
@@ -241,7 +258,6 @@ class GameEngine extends BasicGameEngine{
 				dialogInterface.cancel();
 			}
 		});
-
 		builder.setView(view);
 		builder.show();
 
@@ -270,8 +286,7 @@ class GameEngine extends BasicGameEngine{
 
 	private boolean comprobarJuegoFinalizado() {
 		if (casillasLibresDisponibles == 0) {
-			Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonAbandonar);
-			botonAbandonar.setText(R.string.textoReiniciar);
+			Button botonAbandonar = (Button) pantalla.findViewById(R.id.botonReiniciar);
 			botonAbandonar.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View botonPulsado) {

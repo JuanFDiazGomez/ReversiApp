@@ -8,5 +8,9 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/prompt_nickname" />
+        android:id="@+id/prompt_nickname"
+        android:textColorLink="@android:color/black"
+        android:textColorHint="#000000"
+        android:textCursorDrawable="@android:color/black"
+        android:textColorHighlight="@android:color/black" />
 </LinearLayout>

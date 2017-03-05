@@ -24,8 +24,4 @@ public class Juego extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
-    
-    public void abandonar_onClick(View view) {
-        this.finish();
-    }
 }

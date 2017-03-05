@@ -12,12 +12,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView18" />
-
         <Button
             android:text="@string/boton_ayuda"
             android:layout_width="match_parent"
@@ -26,7 +20,20 @@
             android:layout_weight="0.06"
             android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:fontFamily="casual"
+            android:textSize="24sp"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+        <com.quantumdeers.reversiw.MiButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/casillaJugador"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:text="0"
@@ -36,7 +43,7 @@
             android:gravity="center"
             android:textSize="30sp"
             android:id="@id/puntuacionJugador"
-            android:layout_below="@+id/textView18"
+            android:layout_below="@+id/casillaJugador"
             android:layout_alignParentStart="true" />
     </RelativeLayout>
 
@@ -53,22 +60,28 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView20" />
-
         <Button
-            android:text="@string/boton_abandonar"
+            android:text="@string/boton_reiniciar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/botonReiniciar"
             android:layout_weight="0.06"
             android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:onClick="abandonar_onClick" />
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textSize="14sp"
+            android:fontFamily="casual" />
+
+        <com.quantumdeers.reversiw.MiButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/casillaMaquina"
+            android:layout_marginTop="46dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:text="0"
@@ -78,7 +91,7 @@
             android:gravity="center"
             android:id="@id/puntuacionIA"
             android:textSize="30sp"
-            android:layout_below="@+id/textView20"
+            android:layout_below="@+id/casillaMaquina"
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>

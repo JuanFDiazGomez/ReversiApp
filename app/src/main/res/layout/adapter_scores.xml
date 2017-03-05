@@ -9,7 +9,7 @@
         android:id="@+id/adapterNick"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="24sp" />
+        android:textSize="18sp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -23,7 +23,7 @@
             android:id="@+id/adapterPoints"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:id="@+id/adapterTotal"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <TextView
@@ -40,6 +40,6 @@
         android:id="@+id/adapterDate"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="24sp" />
+        android:textSize="18sp" />
 
 </LinearLayout>

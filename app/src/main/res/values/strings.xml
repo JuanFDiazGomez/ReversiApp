@@ -26,7 +26,7 @@
     <string name="input_dialog_nickname">Introduce tu nombre</string>
     <string name="btn_instrucciones">Instrucciones</string>
     <string name="btn_dificultarDefecto">Dificultad: Fácil</string>
-    <string name="guardarPuntuaciones">Guardar puntuaciones</string>
+    <string name="guardarPuntuaciones">Guardar</string>
     <string name="puntuacionesNombre">Nombre</string>
     <string name="puntuacionesPuntosProp">Puntos</string>
     <string name="puntuacionesTotal">Total</string>
@@ -42,4 +42,5 @@
     <string name="url">http://192.168.100.7</string>
     <string name="author">Juan Francisco Diaz Gomez</string>
     <string name="descripcion">Aplicación desarrollada como proyecto final del modulo Programacion Multimedia y Dispositivos de 2º Curso de Desarrollo de aplicaciones multiplataforma en el I.E.S Poeta Paco Molla 2017</string>
+    <string name="boton_reiniciar">Reiniciar</string>
 </resources>
