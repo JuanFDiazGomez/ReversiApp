@@ -12,5 +12,7 @@
         android:textColorLink="@android:color/black"
         android:textColorHint="#000000"
         android:textCursorDrawable="@android:color/black"
-        android:textColorHighlight="@android:color/black" />
+        android:textColorHighlight="@android:color/black"
+        android:maxLength="11"
+        android:textAlignment="center" />
 </LinearLayout>
