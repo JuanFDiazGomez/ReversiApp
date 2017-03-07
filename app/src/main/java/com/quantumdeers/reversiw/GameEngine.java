@@ -190,7 +190,6 @@ class GameEngine extends BasicGameEngine{
 			super.onPostExecute(aVoid);
 			actualizarPuntuaciones();
 			if (comprobarJuegoFinalizado()) {
-				tostadaResultado();
 				guardarPuntuaciones();
 			} else {
 				prepararSiguienteTurno();
@@ -211,7 +210,6 @@ class GameEngine extends BasicGameEngine{
 					}
 				} else {
 					guardarPuntuaciones();
-					tostadaResultado();
 				}
 			}
 			botonReiniciar.setClickable(Boolean.TRUE);
@@ -229,12 +227,20 @@ class GameEngine extends BasicGameEngine{
 	}
 
 	private void guardarPuntuaciones() {
+		String strResult;
+		if (casillasIA.size() < casillasJugador.size()) {
+			strResult = "****Has ganado****";
+		} else if (casillasIA.size() > casillasJugador.size()) {
+			strResult = "****Has perdido****";
+		} else {
+			strResult = "****Empate****";
+		}
 		ReversiDB reversiDB = new ReversiDB(juego,"ReversiDB",null,1);
 		SQLiteDatabase db = reversiDB.getWritableDatabase();
 		LayoutInflater inflater = LayoutInflater.from(juego);
 		View view = inflater.inflate(R.layout.prompt_dialog_nickname, null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(juego,AlertDialog.THEME_HOLO_LIGHT);
-		builder.setTitle(R.string.input_dialog_nickname);
+		builder.setTitle(strResult);
 		final EditText txtNickname = (EditText) view.findViewById(R.id.prompt_nickname);
 		builder.setCancelable(true);
 		builder.setPositiveButton(R.string.guardarPuntuaciones, new DialogInterface.OnClickListener() {
@@ -319,17 +325,5 @@ class GameEngine extends BasicGameEngine{
 		botonAyuda.setClickable(Boolean.TRUE);
 		ayudaVisible = Boolean.FALSE;
 		iniciarJuego();
-	}
-
-	private void tostadaResultado() {
-		String strResult;
-		if (casillasIA.size() < casillasJugador.size()) {
-			strResult = "****Has ganado****";
-		} else if (casillasIA.size() > casillasJugador.size()) {
-			strResult = "****Has perdido****";
-		} else {
-			strResult = "****Empate****";
-		}
-		Toast.makeText(juego, strResult, Toast.LENGTH_LONG).show();
 	}
 }
