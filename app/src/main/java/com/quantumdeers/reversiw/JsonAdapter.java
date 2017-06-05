@@ -21,6 +21,7 @@ public class JsonAdapter extends BaseAdapter {
 
     JSONArray noticias;
     Context contexto;
+    // Array de Drawables con imagenes cargadas desde internet
     Drawable[] drawables;
 
     public JsonAdapter(Context contexto, JSONArray noticias,Drawable[] drawables) {

@@ -40,7 +40,6 @@ public class Principal extends AppCompatActivity {
         return true;
     }
 
-    //TODO cambiar la funcionalidad de este menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -74,20 +73,9 @@ public class Principal extends AppCompatActivity {
         }
 
     }
-
+    //
     private void cambiarPantalla(Class activity) {
         Intent intent = new Intent(this, activity);
         startActivity(intent);
-    }
-
-    public void principal_CambiarDificultad(View view) {
-        Button boton = (Button) view;
-        int dificultadActual = (Integer) boton.getTag();
-        dificultadActual = (dificultadActual < 2) ? dificultadActual + 1 : 0;
-        boton.setText(
-                (getResources().
-                        getStringArray(R.array.btn_dificultadArray))[dificultadActual]
-        );
-        boton.setTag(dificultadActual);
     }
 }

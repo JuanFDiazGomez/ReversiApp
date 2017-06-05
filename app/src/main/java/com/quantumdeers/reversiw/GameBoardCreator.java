@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+/**
+ * Esta clase es la encargada de crear el tablero dinamico del juego
+ * y tambien contiene toda la logica de juego
+ */
 class GameBoardCreator {
     private Juego juego;
     private LinearLayout pantalla;

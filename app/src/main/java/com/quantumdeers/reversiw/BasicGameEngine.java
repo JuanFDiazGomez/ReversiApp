@@ -6,12 +6,11 @@ import java.util.ArrayList;
 
 /**
  * Created by alumno on 15/11/16.
+ * Esta clase esta creada para para poder crear una clase
+ * IAEngine que herede de esta y tenga la logica de juego interna
  */
 
 public abstract class BasicGameEngine {
-
-    //TODO cambiar la logica de juego a una Matriz de CasillaType para eliminar los arrayList
-    //TODO CasillaType.Jugador Empty o IA
     protected MiButton[][] matrizBotones; // El tablero en si
     protected static int TAM; // Variable que especifica el tamaño del tablero
     protected CoordenadasBusqueda coordenadas; // Clase que contiene las coordenada de busqueda
@@ -29,7 +28,11 @@ public abstract class BasicGameEngine {
         this.casillasLibresDisponibles = TAM*TAM;
 
     }
-
+    /*
+    Este es la jugada en si, añadimos el boton pulsado
+    a nuestra lista de botones en posesion y lo
+    eliminaremos de las casillas libres
+     */
     protected void jugada(Integer botonPulsado) {
         ArrayList<Integer> casillasPropias;
         if (turnoJugadorActual == Turnos.JUGADOR) {
@@ -45,7 +48,10 @@ public abstract class BasicGameEngine {
             e.printStackTrace();
         }
     }
-
+    /*
+    Buscamos sobre las casillas que tiene el jugador proximo para
+    habilitarle las casillas posibles
+     */
     protected void habilitarOpciones() {
         ArrayList<Integer> casillasContrarias;
         ArrayList<Integer> casillasPropias;
@@ -56,9 +62,12 @@ public abstract class BasicGameEngine {
             casillasPropias = casillasIA;
             casillasContrarias = casillasJugador;
         }
-
+        /*
+        Miramos las cordenadas que tiene cada boton
+         */
         casillasDisponibles.clear();
         for (int tag : casillasPropias) {
+            //Comprobamos que no da la vuelta por la izquieda a la matriz
             if (tag % TAM < (TAM - 1)) {
                 if (casillasContrarias.indexOf(tag + coordenadas.E()) > -1) {
                     agregarDisponibles(tag, coordenadas.E(), casillasContrarias);
@@ -70,6 +79,7 @@ public abstract class BasicGameEngine {
                     agregarDisponibles(tag, coordenadas.SE(), casillasContrarias);
                 }
             }
+            // comprobamos que no da la vuelta por la derecha
             if (tag % TAM != 0) {
                 if (casillasContrarias.indexOf(tag + coordenadas.W()) > -1) {
                     agregarDisponibles(tag, coordenadas.W(), casillasContrarias);
@@ -89,7 +99,7 @@ public abstract class BasicGameEngine {
             }
         }
     }
-
+    // con este metodo se nos agregaran las disponiles para cada turno
     protected void agregarDisponibles(int origen, int coordenada, ArrayList<Integer> casillasContrarias) {
         int disponible = busqueda(origen + coordenada, coordenada, casillasContrarias);
         if (disponible > -1) {
@@ -97,7 +107,7 @@ public abstract class BasicGameEngine {
             matrizBotones[disponible / TAM][disponible % TAM].setClickable(true);
         }
     }
-
+    // aqui buscaremos de forma recursiva en una misma direccion si hay casillas disponibles
     protected int busqueda(int tag, int coordenada, ArrayList<Integer> casillasContrarias) {
         int nuevoTag = tag + coordenada;
         if (Math.abs(coordenada) == 1) {
@@ -117,7 +127,8 @@ public abstract class BasicGameEngine {
             return -1;
         }
     }
-
+    // pulsando una casilla disponible este metodo nos llevara a la casilla
+    // la cual nos habilito la casilla pulsada
     protected ArrayList<String> voltearCasillas(Integer seleccion) {
         ArrayList<String> casillasAGirar = new ArrayList<>(10);
         for (int index = 0; index < casillasDisponibles.size(); index++) {
@@ -137,13 +148,15 @@ public abstract class BasicGameEngine {
         }
         return casillasAGirar;
     }
-
     protected void prepararSiguienteTurno() {
         int vueltas = 0;
         do {
             turnoJugadorActual = (turnoJugadorActual == Turnos.JUGADOR) ? Turnos.IA : Turnos.JUGADOR;
             habilitarOpciones();
             vueltas++;
+            // si sale de este metodo cuando las casillas disponibles son 0
+            // y ya se han dado 2 vueltas es por que ninguno de los dos
+            // puede realizar nignun movimiento
         } while (casillasDisponibles.size() < 1 && vueltas != 2);
     }
 }

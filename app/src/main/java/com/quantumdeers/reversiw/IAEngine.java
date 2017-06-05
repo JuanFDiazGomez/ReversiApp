@@ -8,6 +8,10 @@ import java.util.ArrayList;
  * Created by alumno on 11/11/16.
  */
 
+/**
+ * Esta clase estaba para implementar una jugada de la IA
+ * comprobando que esta jugada fuera la mejor posible
+ */
 public class IAEngine extends BasicGameEngine {
 
     private int profundidadMax;

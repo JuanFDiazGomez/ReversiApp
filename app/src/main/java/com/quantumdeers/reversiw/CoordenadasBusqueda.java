@@ -4,7 +4,11 @@ enum Turnos{
     JUGADOR, IA
 }
 
-
+/**
+ * Esta clase nos permite almacenar que casilla
+ * es la que nos habilito una para que al pulsarla
+ * cambiemos todas las fichas intermedias
+ */
 class OrigenSeleccion {
     int origen;
     int disponile;
@@ -17,6 +21,10 @@ class OrigenSeleccion {
     }
 }
 
+/**
+ * Con esta clase creamos las variacion que tiene que seguir
+ * segun el tamaño escogido del tablero
+ */
 class CoordenadasBusqueda {
     private int TAM;
 
